@@ -27,6 +27,7 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
 require("plugins.icons"),
 require("plugins.theme"),
+require("plugins.alpha"),
 require("plugins.lualine"),
 require("plugins.buffer"),
 require("plugins.indentation"),
@@ -39,5 +40,6 @@ require("plugins.lsp"),
 require("plugins.completion"),
 require("plugins.none-ls"),
 require("plugins.debug"),
-require("plugins.neorg")
+require("plugins.neorg"),
+require("plugins.nerdy")
 })
