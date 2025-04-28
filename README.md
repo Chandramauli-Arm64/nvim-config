@@ -89,7 +89,7 @@ I would appreciate if you also contribute and help point out or fix some issues.
 
 ### Node.js Setup
 
-- Node.js 18+ (required for some plugins and LSPs).
+- Node.js 20+ (required for some plugins and LSPs).
 
 - npm (Node.js package manager).
 
