@@ -8,7 +8,7 @@ I would appreciate if you also contribute and help point out or fix some issues.
 
 > ⚡️ A lightweight and powerful Neovim setup focused on productivity.
 
-![Screenshot_2025-04-28-14-32-47-40_84d3000e3f4017145260f7618db1d683](_res/Screenshot_2025-04-28-14-32-47-40_84d3000e3f4017145260f7618db1d683.jpg)
+![Screenshot_2025-04-28-14-32-47-40_84d3000e3f4017145260f7618db1d683](Screenshot_2025-04-28-14-32-47-40_84d3000e3f4017145260f7618db1d683.jpg)
 
 ## Features
 
