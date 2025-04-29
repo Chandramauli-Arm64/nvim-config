@@ -40,7 +40,7 @@ I would appreciate if you also contribute and help point out or fix some issues.
 
 - [Termux Fdroid](https://f-droid.org/packages/com.termux)
 
-- Neovim 0.10.0 or higher (Strongly recommend)
+- Neovim 0.11.0 (Strongly recommend)
 
 - Nerd Fonts (Download Termux Styling from F-Droid or GitHub and use any Nerd font).
 
