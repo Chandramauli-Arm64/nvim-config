@@ -1,10 +1,12 @@
 # My Neovim Configuration
 
-This is my first nvim configuration.
-This whole setup is built for smartphone (Termux).
+### About This Configuration
 
-Right now it can have multiple errors that need to be fixed, and I am fixing them slowly.
-I would appreciate if you also contribute and help point out or fix some issues.
+This is my first Neovim configuration, built specifically for smartphone use via Termux. It's designed for educational purposes — both for my personal learning and for anyone else interested in creating a full-fledged mobile IDE using Neovim.
+
+While the setup is mostly stable, some issues may still exist due to platform-specific limitations in Termux. I actively maintain and improve this configuration, but I welcome contributions, suggestions, and bug reports from others.
+
+Feel free to open issues, suggest improvements, or help others. I'm still learning Neovim and programming myself, so collaboration is always appreciated.
 
 > ⚡️ A lightweight and powerful Neovim setup focused on productivity.
 
@@ -62,7 +64,16 @@ I would appreciate if you also contribute and help point out or fix some issues.
 
 - Lua Language Server (for LSP support; recommend installing the smartphone-supported version from GitHub).
 
-- As for Stylua it will not work in Termux. If you are able to find the arm64 V8 or v7 version depending on your smartphone then clone it via git. Then install Rust via `pkg install rust` and build it with cargo.
+> Note: Stylua does not work by default in Termux because official binaries are not available for ARM64 or ARMv7 Android devices. If you'd like to use Stylua, you'll need to:
+
+- 1. Find or clone the Stylua source code from its GitHub repository.
+
+- 2. Install Rust using `pkg install rust` or `rustup`
+
+- 3. Build Stylua manually using `cargo build --release`
+
+- This process depends on your phone's architecture (ARM64-v8a or ARMv7). Once built successfully, you can integrate Stylua into your Neovim setup.
+
 
 ### Python Setup
 
@@ -80,7 +91,7 @@ I would appreciate if you also contribute and help point out or fix some issues.
 
 - pyright (It will be also installed automatically via Mason
 
-> ruff will not work in Termux. If you are able to build and get it working then use ruff and remove flake8 and Black.
+>  Note: Ruff does not work out of the box in Termux because it requires native Rust compilation, which can be complex on Android. If you still want to use Ruff, you'll need to install Rust via rustup, build Ruff from source, and ensure all dependencies are correctly configured. If successful, you can replace Flake8 and Black with Ruff for faster and unified linting.
 
 ### Node.js Setup
 
