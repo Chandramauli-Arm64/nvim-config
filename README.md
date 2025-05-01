@@ -1,7 +1,8 @@
 # My Neovim Configuration
 
 [![neovim-logo-300x87.png](https://i.postimg.cc/SKVHb9wf/neovim-logo-300x87.png)](https://postimg.cc/JyDpbs7s)
-[![2048px-Termux-svg.png](https://i.postimg.cc/T2gRD7my/2048px-Termux-svg.png)](https://postimg.cc/K4cSX50F)
+[![termux.png](https://i.postimg.cc/CLLSQjdJ/termux.png)](https://postimg.cc/9zS64wdq)
+
 ### About This Configuration
 
 This is my first Neovim configuration, built specifically for smartphone use via Termux. It's designed for educational purposes — both for my personal learning and for anyone else interested in creating a full-fledged mobile IDE using Neovim.
@@ -76,7 +77,6 @@ Feel free to open issues, suggest improvements, or help others. I'm still learni
 
 - This process depends on your phone's architecture (ARM64-v8a or ARMv7). Once built successfully, you can integrate Stylua into your Neovim setup.
 
-
 ### Python Setup
 
 - Python (required for Python development and Neovim Python integration).
@@ -93,7 +93,7 @@ Feel free to open issues, suggest improvements, or help others. I'm still learni
 
 - pyright (It will be also installed automatically via Mason
 
->  Note: Ruff does not work out of the box in Termux because it requires native Rust compilation, which can be complex on Android. If you still want to use Ruff, you'll need to install Rust via rustup, build Ruff from source, and ensure all dependencies are correctly configured. If successful, you can replace Flake8 and Black with Ruff for faster and unified linting.
+> Note: Ruff does not work out of the box in Termux because it requires native Rust compilation, which can be complex on Android. If you still want to use Ruff, you'll need to install Rust via rustup, build Ruff from source, and ensure all dependencies are correctly configured. If successful, you can replace Flake8 and Black with Ruff for faster and unified linting.
 
 ### Node.js Setup
 
@@ -166,4 +166,3 @@ This configuration is released under the MIT License. You are free to use, modif
 ### [Kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim) - for initial structure inspiration and best practices.
 
 ### Henry Misc – whose Neovim tutorials significantly guided the setup and workflow decisions.Watch the channel here: [Henry Misc on YouTube](https://youtu.be/KYDG3AHgYEs?si=6GgJ39KnuQJG7swc)
-
