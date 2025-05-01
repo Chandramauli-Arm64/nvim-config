@@ -27,7 +27,7 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
 require("plugins.icons"),
 require("plugins.theme"),
-require("plugins.alpha"),
+-- require("plugins.alpha"),
 require("plugins.lualine"),
 require("plugins.buffer"),
 require("plugins.indentation"),
