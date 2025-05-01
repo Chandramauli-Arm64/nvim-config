@@ -1,5 +1,7 @@
 # My Neovim Configuration
 
+[![neovim-logo-300x87.png](https://i.postimg.cc/SKVHb9wf/neovim-logo-300x87.png)](https://postimg.cc/JyDpbs7s)
+
 ### About This Configuration
 
 This is my first Neovim configuration, built specifically for smartphone use via Termux. It's designed for educational purposes — both for my personal learning and for anyone else interested in creating a full-fledged mobile IDE using Neovim.
