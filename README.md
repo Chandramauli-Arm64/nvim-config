@@ -92,7 +92,7 @@ Feel free to open issues, suggest improvements, or help others. I'm still learni
 
 - prettier ( you can leave this because Mason will install it automatically).
 
-- pyright (It will be also installed automatically via Mason
+- pyright (It will be also installed automatically via Mason)
 
 > [!NOTE]
 > Ruff does not work out of the box in Termux because it requires native Rust compilation, which can be complex on Android. If you still want to use Ruff, you'll need to install Rust via rustup, build Ruff from source, and ensure all dependencies are correctly configured. If successful, you can replace Flake8 and Black with Ruff for faster and unified linting.
