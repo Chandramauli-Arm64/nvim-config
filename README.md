@@ -70,13 +70,13 @@ Feel free to open issues, suggest improvements, or help others. I'm still learni
 > [!Note]
 > Stylua does not work by default in Termux because official binaries are not available for ARM64 or ARMv7 Android devices. If you'd like to use Stylua, you'll need to:
 
-> - 1. Find or clone the Stylua source code from its GitHub repository.
+> 1. Find or clone the Stylua source code from its GitHub repository.
 
-> - 2. Install Rust using `pkg install rust` or `rustup`
+> 2. Install Rust using `pkg install rust` or `rustup`
 
-> - 3. Build Stylua manually using `cargo build --release`
+> 3. Build Stylua manually using `cargo build --release`
 
-> - This process depends on your phone's architecture (ARM64-v8a or ARMv7). Once built successfully, you can integrate Stylua into your Neovim setup.
+> This process depends on your phone's architecture (ARM64-v8a or ARMv7). Once built successfully, you can integrate Stylua into your Neovim setup.
 
 ### Python Setup
 
