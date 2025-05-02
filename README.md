@@ -119,23 +119,21 @@ Feel free to open issues, suggest improvements, or help others. I'm still learni
 
 - fd (simple, fast alternative to find command; enhances Telescope performance).
 
-### Special Notes for Termux Users (Smartphone)
-
+> [!TIP]
+> Special Notes for Termux Users (Smartphone)
+>
 > Since this setup is optimized for smartphones (especially using Termux), make sure:
-
-- Termux is updated to the latest version.
-
-- You have a proper package source (F-Droid or official GitHub release).
-
-- Compiling large servers like Lua-Language-Server might take time; clone smartphone-supported versions where available.
-
-- Consider using lightweight alternatives where possible to avoid device overheating and battery drainage.
+>
+> - Termux is updated to the latest version.
+> - You have a proper package source (F-Droid or official GitHub release).
+> - Compiling large servers like Lua-Language-Server might take time; clone smartphone-supported versions where available.
+> - Consider using lightweight alternatives where possible to avoid device overheating and battery drainage.
 
 ## Installation Commands (Short Summary)
 
 ### Basic packages
 
-`pkg install git neovim nodejs python lua luarocks cmake ninja`
+`pkg install git neovim nodejs python lua luarocks clang cmake ninja`
 
 ### Python packages
 
