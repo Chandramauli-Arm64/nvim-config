@@ -67,15 +67,16 @@ Feel free to open issues, suggest improvements, or help others. I'm still learni
 
 - Lua Language Server (for LSP support; recommend installing the smartphone-supported version from GitHub).
 
-> Note: Stylua does not work by default in Termux because official binaries are not available for ARM64 or ARMv7 Android devices. If you'd like to use Stylua, you'll need to:
+> [!Note]
+> Stylua does not work by default in Termux because official binaries are not available for ARM64 or ARMv7 Android devices. If you'd like to use Stylua, you'll need to:
 
-- 1. Find or clone the Stylua source code from its GitHub repository.
+> - 1. Find or clone the Stylua source code from its GitHub repository.
 
-- 2. Install Rust using `pkg install rust` or `rustup`
+> - 2. Install Rust using `pkg install rust` or `rustup`
 
-- 3. Build Stylua manually using `cargo build --release`
+> - 3. Build Stylua manually using `cargo build --release`
 
-- This process depends on your phone's architecture (ARM64-v8a or ARMv7). Once built successfully, you can integrate Stylua into your Neovim setup.
+> - This process depends on your phone's architecture (ARM64-v8a or ARMv7). Once built successfully, you can integrate Stylua into your Neovim setup.
 
 ### Python Setup
 
@@ -93,7 +94,8 @@ Feel free to open issues, suggest improvements, or help others. I'm still learni
 
 - pyright (It will be also installed automatically via Mason
 
-> Note: Ruff does not work out of the box in Termux because it requires native Rust compilation, which can be complex on Android. If you still want to use Ruff, you'll need to install Rust via rustup, build Ruff from source, and ensure all dependencies are correctly configured. If successful, you can replace Flake8 and Black with Ruff for faster and unified linting.
+> [!Note]
+> Ruff does not work out of the box in Termux because it requires native Rust compilation, which can be complex on Android. If you still want to use Ruff, you'll need to install Rust via rustup, build Ruff from source, and ensure all dependencies are correctly configured. If successful, you can replace Flake8 and Black with Ruff for faster and unified linting.
 
 ### Node.js Setup
 
@@ -159,7 +161,8 @@ Feel free to open issues, suggest improvements, or help others. I'm still learni
 
 This configuration is released under the MIT License. You are free to use, modify, and distribute it as you like, with proper attribution.
 
-> Note: This setup relies on several third-party plugins and tools. Each plugin retains its own license and should be respected accordingly. Please refer to the plugin repositories for more information.
+> [!Note]
+> This setup relies on several third-party plugins and tools. Each plugin retains its own license and should be respected accordingly. Please refer to the plugin repositories for more information.
 
 ## Credits
 
