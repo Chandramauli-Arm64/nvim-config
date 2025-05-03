@@ -40,6 +40,8 @@ Feel free to open issues, suggest improvements, or help others. I'm still learni
 
 - Which-key and Noice.nvim support.
 
+- Markdown Preview Support(iamcco/markdown-preview.nvim)
+
 ## Requirements
 
 - [Termux GitHub](https://github.com/termux/termux-app)
