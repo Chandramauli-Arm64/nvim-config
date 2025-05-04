@@ -38,7 +38,7 @@ return {
           from_stderr = false,
           format = "line",
           check_exit_code = function(code) return code <= 1 end,
-          on_output = function(line, params)
+          on_output = function(line)
             local row, col, code, msg = line:match("^(%d+):(%d+):([%w]+):(.+)$")
             return {
               row = tonumber(row),
@@ -65,7 +65,7 @@ return {
           from_stderr = false,
           format = "line",
           check_exit_code = function(code) return code <= 1 end,
-          on_output = function(line, params)
+          on_output = function(line)
             local row, col, msg = line:match("^(%d+):(%d+): (.+)$")
             if row and col and msg then
               return {
