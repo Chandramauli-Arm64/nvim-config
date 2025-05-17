@@ -73,7 +73,9 @@ return {
 
 ---@diagnostic disable-next-line: undefined-field
     dap.listeners.after.event_initialized['dapui_config'] = dapui.open
+---@diagnostic disable-next-line: undefined-field
     dap.listeners.before.event_terminated['dapui_config'] = dapui.close
+---@diagnostic disable-next-line: undefined-field
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
 
     -- Install golang specific config
