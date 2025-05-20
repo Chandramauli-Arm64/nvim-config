@@ -11,7 +11,6 @@ return {
         ensure_installed = {
           "pyright",
           "ts_ls",
-          "ltex",
           "html",
           "cssls",
         },
@@ -22,9 +21,6 @@ return {
 
       -- Setup Language Servers
       lspconfig.pyright.setup {
-        capabilities = capabilities,
-      }
-      lspconfig.ltex.setup {
         capabilities = capabilities,
       }
       lspconfig.ts_ls.setup {
