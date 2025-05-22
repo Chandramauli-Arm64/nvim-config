@@ -24,7 +24,7 @@ return {
         command = '/data/data/com.termux/files/usr/bin/black',
       },
       formatting.shfmt.with { args = { '-i', '4' } },
-      formatting.prettier.with { filetypes = { 'html', 'css', 'json' } },
+      formatting.prettier.with { filetypes = { 'html', 'css', 'json', 'yaml' } },
 
       -- Diagnostics for flake8 (custom defined)
       helpers.make_builtin({
