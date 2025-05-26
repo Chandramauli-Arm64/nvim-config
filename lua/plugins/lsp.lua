@@ -13,6 +13,7 @@ return {
           "ts_ls",
           "html",
           "cssls",
+          "yamlls",
         },
       })
 
@@ -30,6 +31,9 @@ return {
        capabilities = capabilities,
       }
       lspconfig.cssls.setup {
+        capabilities = capabilities,
+      }
+      lspconfig.yamlls.setup {
         capabilities = capabilities,
       }
       lspconfig.lua_ls.setup({
