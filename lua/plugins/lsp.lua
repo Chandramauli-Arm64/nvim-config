@@ -14,6 +14,7 @@ return {
           "html",
           "cssls",
           "yamlls",
+          "jsonls",
         },
       })
 
@@ -36,12 +37,15 @@ return {
       lspconfig.yamlls.setup {
         capabilities = capabilities,
       }
+      lspconfig.jsonls.setup {
+        capabilities = capabilities,
+      }
       lspconfig.lua_ls.setup({
         capabilities = capabilities,
   cmd = { "/data/data/com.termux/files/home/lua-language-server/bin/lua-language-server" },
   settings = {
     Lua = {
-      runtime = { version = "Lua 5.4" },
+      runtime = { version = "LuaJIT" },
       diagnostics = {
         globals = { "vim" },
       },
