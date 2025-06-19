@@ -40,6 +40,6 @@ require("plugins.completion"),
 require("plugins.none-ls"),
 require("plugins.debug"),
 require("plugins.nerdy"),
-require("plugins.mark-preview")
+require("plugins.mark-preview"),
 require("plugins.nerdy")
 })
