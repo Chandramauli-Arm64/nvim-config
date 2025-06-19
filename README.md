@@ -46,7 +46,9 @@ Feel free to open issues, suggest improvements, or help others. I'm still learni
 
 After cloning the repository run: 
 
-`./install.sh`
+```sh
+./install.sh
+```
 
 Then follow the on-screen prompts.
 
