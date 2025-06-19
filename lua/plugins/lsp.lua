@@ -11,9 +11,10 @@ return {
         ensure_installed = {
           "pyright",
           "ts_ls",
-          "ltex",
           "html",
           "cssls",
+          "yamlls",
+          "jsonls",
         },
       })
 
@@ -22,9 +23,6 @@ return {
 
       -- Setup Language Servers
       lspconfig.pyright.setup {
-        capabilities = capabilities,
-      }
-      lspconfig.ltex.setup {
         capabilities = capabilities,
       }
       lspconfig.ts_ls.setup {
@@ -36,12 +34,18 @@ return {
       lspconfig.cssls.setup {
         capabilities = capabilities,
       }
+      lspconfig.yamlls.setup {
+        capabilities = capabilities,
+      }
+      lspconfig.jsonls.setup {
+        capabilities = capabilities,
+      }
       lspconfig.lua_ls.setup({
         capabilities = capabilities,
   cmd = { "/data/data/com.termux/files/home/lua-language-server/bin/lua-language-server" },
   settings = {
     Lua = {
-      runtime = { version = "Lua 5.4" },
+      runtime = { version = "LuaJIT" },
       diagnostics = {
         globals = { "vim" },
       },

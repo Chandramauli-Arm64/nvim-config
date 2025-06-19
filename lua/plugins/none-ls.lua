@@ -24,7 +24,7 @@ return {
         command = '/data/data/com.termux/files/usr/bin/black',
       },
       formatting.shfmt.with { args = { '-i', '4' } },
-      formatting.prettier.with { filetypes = { 'html', 'css', 'json', 'yaml', 'markdown' } },
+      formatting.prettier.with { filetypes = { 'html', 'css', 'json', 'yaml', 'javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'vue' } },
 
       -- Diagnostics for flake8 (custom defined)
       helpers.make_builtin({
@@ -38,7 +38,7 @@ return {
           from_stderr = false,
           format = "line",
           check_exit_code = function(code) return code <= 1 end,
-          on_output = function(line, params)
+          on_output = function(line)
             local row, col, code, msg = line:match("^(%d+):(%d+):([%w]+):(.+)$")
             return {
               row = tonumber(row),
@@ -65,7 +65,7 @@ return {
           from_stderr = false,
           format = "line",
           check_exit_code = function(code) return code <= 1 end,
-          on_output = function(line, params)
+          on_output = function(line)
             local row, col, msg = line:match("^(%d+):(%d+): (.+)$")
             if row and col and msg then
               return {
