@@ -42,6 +42,16 @@ Feel free to open issues, suggest improvements, or help others. I'm still learni
 
 - Markdown Preview Support(iamcco/markdown-preview.nvim)
 
+## installation
+
+After cloning the repository run: 
+
+```sh
+./install.sh
+```
+
+Then follow the on-screen prompts.
+
 ## Requirements
 
 - [Termux GitHub](https://github.com/termux/termux-app)
@@ -130,28 +140,6 @@ Feel free to open issues, suggest improvements, or help others. I'm still learni
 > - You have a proper package source (F-Droid or official GitHub release).
 > - Compiling large servers like Lua-Language-Server might take time; clone smartphone-supported versions where available.
 > - Consider using lightweight alternatives where possible to avoid device overheating and battery drainage.
-
-## Installation Commands (Short Summary)
-
-### Basic packages
-
-`pkg install git neovim nodejs python lua luarocks clang cmake ninja`
-
-### Python packages
-
-`pip install pynvim debugpy flake8 black`
-
-### Node.js Neovim client
-
-`npm install -g neovim`
-
-### Lua checker
-
-`luarocks install luacheck`
-
-### Recommended additional tools
-
-`pkg install ripgrep fd`
 
 ## Contribution 🫡
 
