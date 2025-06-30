@@ -5,7 +5,7 @@
   <img src="https://img.shields.io/github/last-commit/Chandramauli-Arm64/nvim-config" />
   <img src="https://img.shields.io/github/languages/top/Chandramauli-Arm64/nvim-config" />
   <img src="https://img.shields.io/github/repo-size/Chandramauli-Arm64/nvim-config" />
-  <img src="https://img.shields.io/github/code-size/Chandramauli-Arm64/nvim-config" />
+  <img src="https://img.shields.io/github/Languages/code-size/Chandramauli-Arm64/nvim-config" />
 </p>
 
 [![neovim-logo-300x87.png](https://i.postimg.cc/SKVHb9wf/neovim-logo-300x87.png)](https://postimg.cc/JyDpbs7s)
