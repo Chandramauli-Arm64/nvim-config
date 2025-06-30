@@ -1,31 +1,10 @@
 # My Neovim Configuration
 
-## --Repo stats--
-
 <p align="center">
-  
-  <!-- License -->
-  <a href="https://github.com/Chandramauli-Arm64/nvim-config/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/Chandramauli-Arm64/nvim-config?color=blue" alt="License">
-  </a>
-
-  <!-- Repo Size -->
-  <a href="https://github.com/Chandramauli-Arm64/nvim-config">
-    <img src="https://img.shields.io/github/repo-size/Chandramauli-Arm64/nvim-config?color=orange" alt="Repo size">
-  </a>
-
-  <!-- Code Size -->
-  <img src="https://img.shields.io/github/languages/code-size/Chandramauli-Arm64/nvim-config?color=purple" alt="Code size" />
-
-  <!-- Commit Count -->
-  <img src="https://img.shields.io/github/commit-activity/y/Chandramauli-Arm64/nvim-config" alt="Commits/year" />
-
-  <!-- Last Commit -->
-  <img src="https://img.shields.io/github/last-commit/Chandramauli-Arm64/nvim-config" alt="Last commit" />
-
-  <!-- Language Used -->
-  <img src="https://img.shields.io/github/languages/top/Chandramauli-Arm64/nvim-config" alt="Top language" />
-
+  <img src="https://img.shields.io/github/license/Chandramauli-Arm64/nvim-config" />
+  <img src="https://img.shields.io/github/last-commit/Chandramauli-Arm64/nvim-config" />
+  <img src="https://img.shields.io/github/languages/top/Chandramauli-Arm64/nvim-config" />
+  <img src="https://img.shields.io/github/repo-size/Chandramauli-Arm64/nvim-config" />
 </p>
 
 [![neovim-logo-300x87.png](https://i.postimg.cc/SKVHb9wf/neovim-logo-300x87.png)](https://postimg.cc/JyDpbs7s)
