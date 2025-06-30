@@ -42,5 +42,6 @@ require("plugins.debug"),
 require("plugins.nerdy"),
 require("plugins.mark-preview"),
 require("plugins.nerdy"),
-require("plugins.lazygit")
+require("plugins.lazygit"),
+require("plugins.renderMark")
 })
