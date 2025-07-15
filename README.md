@@ -1,11 +1,11 @@
 # My Neovim Configuration
 
 <p align="center">
-  <img src="https://img.shields.io/github/license/Chandramauli-Arm64/nvim-config" />
-  <img src="https://img.shields.io/github/last-commit/Chandramauli-Arm64/nvim-config" />
-  <img src="https://img.shields.io/github/languages/top/Chandramauli-Arm64/nvim-config" />
-  <img src="https://img.shields.io/github/repo-size/Chandramauli-Arm64/nvim-config" />
-  <img src="https://img.shields.io/github/languages/code-size/Chandramauli-Arm64/nvim-config?color=purple" alt="Code size" />
+  <img src="https://img.shields.io/github/license/Chandramauli-Arm64/nvim-config?style=for-the-badge&color=brightgreen&logo=opensource" alt="License" />
+  <img src="https://img.shields.io/github/last-commit/Chandramauli-Arm64/nvim-config?style=for-the-badge&color=blueviolet&logo=github" alt="Last Commit" />
+  <img src="https://img.shields.io/github/languages/top/Chandramauli-Arm64/nvim-config?style=for-the-badge&color=orange&logo=code" alt="Top Language" />
+  <img src="https://img.shields.io/github/repo-size/Chandramauli-Arm64/nvim-config?style=for-the-badge&color=informational&logo=files" alt="Repo Size" />
+  <img src="https://img.shields.io/github/languages/code-size/Chandramauli-Arm64/nvim-config?style=for-the-badge&color=yellowgreen&logo=github" alt="Code Size" />
 </p>
 
 [![neovim-logo-300x87.png](https://i.postimg.cc/SKVHb9wf/neovim-logo-300x87.png)](https://postimg.cc/JyDpbs7s)
