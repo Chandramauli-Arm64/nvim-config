@@ -1,0 +1,68 @@
+# =================================
+# Neovim Cache and Temp Files
+# =================================
+*.swp
+*.swo
+*.swn
+*.bak
+*.tmp
+
+# Session, undo, backup
+session/
+swap/
+undo/
+backup/
+
+# Lua cache
+luac.out
+
+# Neovim plugin managers
+site/
+pack/
+autoload/plugged/
+
+# Lazy.nvim specific cache
+lazy-lock.json
+/lazy-lock.json
+~/.local/share/nvim/lazy/*
+~/.local/state/nvim/*
+~/.cache/nvim/*
+
+# Packer.nvim compiled file
+plugin/packer_compiled.lua
+
+# Optional logs
+*.log
+logs/
+
+# Telescope history
+sqlite_history.sqlite3
+
+# LSP-related
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# DAP adapters, e.g. vscode-js-debug
+js-debug/
+*.vsix
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Editor-specific
+.vscode/
+.idea/
+
+# Node tools in config (if used)
+node_modules/
+dist/
+build/
+.cache/
+
+# AstroNvim specific (optional, only if not intentionally versioned)
+lua/user/init.lua
+lua/plugins/*  # Only if plugins are personalized
+
+# Git
+.git/
