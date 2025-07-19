@@ -60,9 +60,6 @@ dist/
 build/
 .cache/
 
-# AstroNvim specific (optional, only if not intentionally versioned)
-lua/user/init.lua
-lua/plugins/*  # Only if plugins are personalized
 
 # Git
 .git/
