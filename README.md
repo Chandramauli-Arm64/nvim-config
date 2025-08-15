@@ -4,7 +4,7 @@
 
 ![Top Language](https://img.shields.io/github/languages/top/Chandramauli-Arm64/nvim-config?color=1abc9c&style=for-the-badge)
 
-![Visitors](https://api.visitorbadge.io/api/VisitorHit?Chandramauli-Arm64=estruyf&nvim-config=github-visitors-badge&countColor=%237B1E7A)
+![Visitors](https://vbr.nathanchung.dev/badge?page_id=Chandramauli-Arm64.nvim-config&logo=github)
 
 ![Quote](https://quotes-github-readme.vercel.app/api?type=horizontal&theme=radical)
 
