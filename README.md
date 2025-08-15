@@ -1,26 +1,12 @@
-<!-- Centered Header Badges -->
-<p align="center">
+![Alt](https://repobeats.axiom.co/api/embed/9ff72f6cf7ac1734000ae26bfd8e23118b51aedb.svg "Repobeats analytics image")
 
-  <!-- Large Repobeats Card -->
-  <img src="https://repobeats.axiom.co/api/embed/9ff72f6cf7ac1734000ae26bfd8e23118b51aedb.svg" alt="Repobeats analytics" width="800">
+[![Contributors](https://contrib.rocks/image?repo=Chandramauli-Arm64/nvim-config)](https://github.com/Chandramauli-Arm64/nvim-config/graphs/contributors)
 
-  <!-- Contributors Badge (modern look) -->
-  <br>
-  [![Contributors](https://contrib.rocks/image?repo=Chandramauli-Arm64/nvim-config)](https://github.com/Chandramauli-Arm64/nvim-config/graphs/contributors)
+![Top Language](https://img.shields.io/github/languages/top/Chandramauli-Arm64/nvim-config?color=1abc9c&style=for-the-badge)
 
-  <!-- Top Language Badge (modern Shields.io) -->
-  <br>
-  ![Top Language](https://img.shields.io/github/languages/top/Chandramauli/nvim-config?color=1abc9c&style=for-the-badge)
+![Visitor Count](https://profile-counter.glitch.me/Chandramauli-Arm64/count.svg)
 
-  <!-- Fun Visitor Counter -->
-  <br>
-  ![Visitor Count](https://profile-counter.glitch.me/Chandramauli-Arm64/count.svg)
-
-  <!-- Random Quote Badge (via API, refreshing) -->
-  <br>
-  ![Quote](https://quotes-github-readme.vercel.app/api?type=horizontal&theme=radical)
-
-</p>
+![Quote](https://quotes-github-readme.vercel.app/api?type=horizontal&theme=radical)
 
 # nvim-config
 
