@@ -1,10 +1,4 @@
-█████╗ ██╗     ██████╗ ██╗  ██╗███████╗
-   ██╔══██╗██║     ██╔══██╗██║ ██╔╝██╔════╝
-   ███████║██║     ██████╔╝█████╔╝ █████╗
-   ██╔══██║██║     ██╔═══╝ ██╔═██╗ ██╔══╝
-   ██║  ██║███████╗██║     ██║  ██╗███████╗
-   ╚═╝  ╚═╝╚══════╝╚═╝     ╚═╝  ╚═╝╚══════╝
-       ALPHA BUILD — PROCEED AT OWN RISK
+![Alt](https://repobeats.axiom.co/api/embed/9ff72f6cf7ac1734000ae26bfd8e23118b51aedb.svg "Repobeats analytics image")
 
 # nvim-config
 
