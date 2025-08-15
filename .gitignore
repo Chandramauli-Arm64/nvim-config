@@ -9,7 +9,6 @@
 Session.vim
 
 # Lazy.nvim plugin data
-lazy-lock.json
 state.json
 
 # Generated help tags
