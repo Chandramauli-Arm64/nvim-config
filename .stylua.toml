@@ -1,0 +1,8 @@
+# .stylua.toml
+
+column_width = 80         # Narrower for small screen readability
+line_endings = "Unix"     # Use LF (recommended for most setups)
+indent_type = "Spaces"    # Spaces are safer for mixed environments
+indent_width = 2          # Saves horizontal space on mobile
+quote_style = "AutoPreferDouble"
+call_parentheses = "Always"

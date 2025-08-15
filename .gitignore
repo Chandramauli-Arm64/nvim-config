@@ -1,0 +1,29 @@
+# Neovim temp files
+*.swp
+*.swo
+*.bak
+*.tmp
+*.undo
+
+# Neovim session files
+Session.vim
+
+# Lazy.nvim plugin data
+lazy-lock.json
+state.json
+
+# Generated help tags
+doc/tags
+
+# LSP logs
+*.log
+
+# Termux specific
+.termux/
+*.termux
+
+# OS-generated files
+Thumbs.db
+
+# Temporary folders
+tmp/
