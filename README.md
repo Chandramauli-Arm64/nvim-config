@@ -2,9 +2,9 @@
 
 [![Contributors](https://contrib.rocks/image?repo=Chandramauli-Arm64/nvim-config)](https://github.com/Chandramauli-Arm64/nvim-config/graphs/contributors)
 
-![Top Language](https://img.shields.io/github/languages/top/Chandramauli-Arm64/nvim-config?color=1abc9c&style=for-the-badge)
+![Top Language](https://img.shields.io/github/languages/top/Chandramauli-Arm64/nvim-config?color=1abc9c&style=for-the-badge&logo=lua)
 
-![Visitors](https://vbr.nathanchung.dev/badge?page_id=Chandramauli-Arm64.nvim-config&logo=github)
+![Visitors](https://vbr.nathanchung.dev/badge?page_id=Chandramauli-Arm64.nvim-config&logo=github&color=1abc9c&style=for-the-badge)
 
 ![Quote](https://quotes-github-readme.vercel.app/api?type=horizontal&theme=radical)
 
