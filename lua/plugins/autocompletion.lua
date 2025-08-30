@@ -1,10 +1,6 @@
-if true then
-  return {}
-end
-
 return {
   "hrsh7th/nvim-cmp",
-  event = "InsertEnter",
+  event = "InsertEnter", -- lazy load cmp when entering insert mode
   dependencies = {
     -- Core completion sources
     "hrsh7th/cmp-nvim-lsp",
@@ -23,7 +19,8 @@ return {
       dependencies = {
         "rafamadriz/friendly-snippets",
         config = function()
-          require("luasnip.loaders.from_vscode").lazy_load()
+          -- Lazy load snippets on demand, not all at startup
+          require("luasnip.loaders.from_vscode").lazy_load({ paths = {} })
         end,
       },
     },
@@ -70,7 +67,12 @@ return {
           luasnip.lsp_expand(args.body)
         end,
       },
-      completion = { completeopt = "menu,menuone,noinsert" },
+
+      completion = {
+        completeopt = "menu,menuone,noinsert",
+        -- Only trigger after text change, not every keystroke
+        autocomplete = { cmp.TriggerEvent.TextChanged },
+      },
 
       mapping = cmp.mapping.preset.insert({
         ["<C-n>"] = cmp.mapping.select_next_item(),
@@ -117,8 +119,8 @@ return {
         { name = "nvim_lsp" },
         { name = "luasnip" },
       }, {
-        { name = "buffer" },
-        { name = "path" },
+        { name = "buffer", keyword_length = 3, max_item_count = 5 }, -- on-demand buffer completion
+        { name = "path", keyword_length = 2 }, -- path after 2 chars
       }),
 
       formatting = {
@@ -133,6 +135,10 @@ return {
           })[entry.source.name]
           return vim_item
         end,
+      },
+
+      experimental = {
+        ghost_text = true, -- subtle inline preview
       },
     })
   end,
