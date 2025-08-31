@@ -19,7 +19,6 @@ return {
       dependencies = {
         "rafamadriz/friendly-snippets",
         config = function()
-          -- Lazy load snippets on demand, not all at startup
           require("luasnip.loaders.from_vscode").lazy_load({ paths = {} })
         end,
       },
@@ -32,14 +31,14 @@ return {
     local luasnip = require("luasnip")
     luasnip.config.setup({})
 
-    -- Nice icon set for completion menu
+    -- Nerd Font icons
     local kind_icons = {
       Text = "󰉿",
-      Method = "m",
+      Method = "󰆧",
       Function = "󰊕",
       Constructor = "",
       Field = "",
-      Variable = "󰆧",
+      Variable = "󰀫",
       Class = "󰌗",
       Interface = "",
       Module = "",
@@ -70,30 +69,24 @@ return {
 
       completion = {
         completeopt = "menu,menuone,noinsert",
-        -- Only trigger after text change, not every keystroke
         autocomplete = { cmp.TriggerEvent.TextChanged },
+        keyword_length = 1,
+        max_item_count = 8, -- compact list for mobile
+      },
+
+      window = {
+        completion = cmp.config.window.bordered({
+          border = "rounded",
+          winhighlight = "Normal:Normal,FloatBorder:CmpBorder,CursorLine:PmenuSel,Search:None",
+          scrollbar = false,
+        }),
+        documentation = cmp.config.window.bordered({
+          border = "rounded",
+          winhighlight = "Normal:Normal,FloatBorder:CmpDocBorder,CursorLine:PmenuSel,Search:None",
+        }),
       },
 
       mapping = cmp.mapping.preset.insert({
-        ["<C-n>"] = cmp.mapping.select_next_item(),
-        ["<C-p>"] = cmp.mapping.select_prev_item(),
-        ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-        ["<C-f>"] = cmp.mapping.scroll_docs(4),
-        ["<C-y>"] = cmp.mapping.confirm({ select = true }),
-        ["<C-Space>"] = cmp.mapping.complete(),
-
-        ["<C-l>"] = cmp.mapping(function()
-          if luasnip.expand_or_locally_jumpable() then
-            luasnip.expand_or_jump()
-          end
-        end, { "i", "s" }),
-
-        ["<C-h>"] = cmp.mapping(function()
-          if luasnip.locally_jumpable(-1) then
-            luasnip.jump(-1)
-          end
-        end, { "i", "s" }),
-
         ["<Tab>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
             cmp.select_next_item()
@@ -113,33 +106,48 @@ return {
             fallback()
           end
         end, { "i", "s" }),
+
+        ["<CR>"] = cmp.mapping.confirm({ select = true }), -- easier confirm
+        ["<C-Space>"] = cmp.mapping.complete(),
+        ["<C-b>"] = cmp.mapping.scroll_docs(-4),
+        ["<C-f>"] = cmp.mapping.scroll_docs(4),
       }),
 
       sources = cmp.config.sources({
         { name = "nvim_lsp" },
         { name = "luasnip" },
       }, {
-        { name = "buffer", keyword_length = 3, max_item_count = 5 }, -- on-demand buffer completion
-        { name = "path", keyword_length = 2 }, -- path after 2 chars
+        { name = "buffer", keyword_length = 3, max_item_count = 5 },
+        { name = "path", keyword_length = 2 },
       }),
 
       formatting = {
         fields = { "kind", "abbr", "menu" },
         format = function(entry, vim_item)
-          vim_item.kind = string.format("%s", kind_icons[vim_item.kind] or "")
+          vim_item.kind = (kind_icons[vim_item.kind] or "") .. " "
           vim_item.menu = ({
-            nvim_lsp = "[LSP]",
-            luasnip = "[Snippet]",
-            buffer = "[Buffer]",
-            path = "[Path]",
+            nvim_lsp = "󰒋 LSP",
+            luasnip = "󰘌 Snip",
+            buffer = "󰈙 Buf",
+            path = "󰉋 Path",
           })[entry.source.name]
           return vim_item
         end,
       },
 
       experimental = {
-        ghost_text = true, -- subtle inline preview
+        ghost_text = { hl_group = "CmpGhostText" },
       },
     })
+
+    -- subtle ghost text style
+    vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
+
+    -- Toggle cmp easily (for mobile typing)
+    vim.keymap.set("n", "<leader>ut", function()
+      local cmp_enabled = cmp.get_config().enabled ~= false
+      cmp.setup({ enabled = not cmp_enabled })
+      print("Cmp " .. (cmp_enabled and "OFF" or "ON"))
+    end, { desc = "Toggle cmp" })
   end,
 }
