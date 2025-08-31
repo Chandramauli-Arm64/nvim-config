@@ -5,19 +5,42 @@ for type, icon in pairs(signs) do
   vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
 end
 
+-- Diagnostic configuration (cleaner UI)
+vim.diagnostic.config({
+  virtual_text = false, -- disable inline spam
+  float = { border = "rounded" },
+  signs = true,
+  underline = true,
+  update_in_insert = false,
+})
+
+-- Handlers with borders for hover/signature
+vim.lsp.handlers["textDocument/hover"] =
+  vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
+vim.lsp.handlers["textDocument/signatureHelp"] =
+  vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
+
 -- Attach function (runs when LSP attaches to buffer)
 local on_attach = function(_, bufnr)
   local bufmap = function(mode, lhs, rhs, desc)
     vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
   end
 
+  -- Core navigation
   bufmap("n", "gd", vim.lsp.buf.definition, "Go to Definition")
   bufmap("n", "gr", vim.lsp.buf.references, "Find References")
   bufmap("n", "K", vim.lsp.buf.hover, "Hover Docs")
   bufmap("n", "<leader>rn", vim.lsp.buf.rename, "Rename Symbol")
   bufmap("n", "ca", vim.lsp.buf.code_action, "Code Action")
+
+  -- Diagnostics
   bufmap("n", "[d", vim.diagnostic.goto_prev, "Prev Diagnostic")
   bufmap("n", "]d", vim.diagnostic.goto_next, "Next Diagnostic")
+  bufmap("n", "<leader>d", vim.diagnostic.open_float, "Line Diagnostics")
+
+  -- Symbols navigation
+  bufmap("n", "<leader>ds", vim.lsp.buf.document_symbol, "Document Symbols")
+  bufmap("n", "<leader>ws", vim.lsp.buf.workspace_symbol, "Workspace Symbols")
 end
 
 -- Capabilities (for better completion)
@@ -42,6 +65,7 @@ local function start_server(cmd, filetypes, settings)
           ),
           on_attach = on_attach,
           capabilities = capabilities,
+          flags = { debounce_text_changes = 50 },
           settings = settings,
         })
       end,
@@ -60,6 +84,24 @@ start_server({ "lua-language-server" }, { "lua" }, {
 start_server({ "clangd" }, { "c", "cpp" })
 start_server({ "ccls" }, { "c", "cpp" })
 start_server({ "yaml-language-server", "--stdio" }, { "yaml" })
+start_server(
+  { "typescript-language-server", "--stdio" },
+  { "typescript", "typescriptreact", "javascript", "javascriptreact" }
+)
+
+-- Enable inlay hints + semantic tokens if available
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    local bufnr = args.buf
+    if client.server_capabilities.inlayHintProvider then
+      vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+    end
+    if client.server_capabilities.semanticTokensProvider then
+      vim.lsp.semantic_tokens.start(bufnr, client.id)
+    end
+  end,
+})
 
 -- Expected LSP servers (system-installed)
 local expected_lsps = {
@@ -67,6 +109,7 @@ local expected_lsps = {
   clangd = "clangd",
   ccls = "ccls",
   yamlls = "yaml-language-server",
+  ts_ls = "typescript-language-server",
 }
 
 -- Native LSP info command with system check
@@ -125,3 +168,12 @@ vim.api.nvim_create_user_command("NativeLspInfo", function()
     print("      Capabilities: " .. table.concat(cap_list, ", "))
   end
 end, { desc = "Show info for native LSP clients (checks system binaries)" })
+
+-- Quick LSP restart command
+vim.api.nvim_create_user_command("LspRestart", function()
+  for _, client in pairs(vim.lsp.get_clients()) do
+    client.stop()
+  end
+  vim.cmd("edit") -- re-triggers FileType autocmd to restart
+  print("LSP clients restarted")
+end, { desc = "Restart all active LSP clients" })
