@@ -1,29 +1,27 @@
 return {
   "stevearc/conform.nvim",
-  event = { "BufWritePre" }, -- lazy load before saving buffer
-  cmd = { "ConformInfo" }, -- load when running :ConformInfo
+  event = { "BufWritePre" }, -- load just before saving
+  cmd = { "ConformInfo" },
   keys = {
     {
       "<leader>f",
       function()
         require("conform").format({ async = true })
       end,
-      mode = "", -- works in normal/visual
+      mode = { "n", "v" },
       desc = "Format buffer",
     },
   },
-  ---@module "conform"
+
   ---@diagnostic disable-next-line: undefined-doc-name
   ---@type conform.setupOpts
   opts = {
-    -- Map filetypes to formatters
+    -- Easy to edit formatter mapping
     formatters_by_ft = {
-      lua = { "stylua" }, -- system stylua
+      lua = { "stylua" },
       python = function(bufnr)
-        -- Prefer ruff_format if available, else run ruff + black
-        if
-          require("conform").get_formatter_info("ruff_format", bufnr).available
-        then
+        local conform = require("conform")
+        if conform.get_formatter_info("ruff_format", bufnr).available then
           return { "ruff_format", "black" }
         else
           return { "ruff", "black" }
@@ -31,33 +29,32 @@ return {
       end,
       javascript = { "prettier" },
       typescript = { "prettier" },
+      vue = { "prettier" },
+      css = { "prettier" },
+      html = { "prettier" },
       json = { "jq" },
-      ["*"] = { "codespell" }, -- run on all filetypes
+      yaml = { "prettier" },
+      ["*"] = { "codespell" }, -- apply everywhere
       ["_"] = { "trim_whitespace" }, -- fallback
     },
 
-    -- Default options for formatting
+    -- Unified formatting options
     default_format_opts = {
-      lsp_format = "fallback", -- fallback to LSP if no formatter
+      lsp_format = "fallback", -- use LSP if no formatter is set
+      timeout_ms = 3000, -- give prettier/others time to finish
+      async = true, -- never block your typing
     },
 
-    -- Format on save (synchronous, short timeout)
-    format_on_save = {
-      lsp_format = "fallback",
-      timeout_ms = 500,
-    },
+    -- Auto-format on save
+    format_on_save = function(bufnr)
+      -- disable for very large files
+      if vim.api.nvim_buf_line_count(bufnr) > 5000 then
+        return
+      end
+      return { timeout_ms = 3000, lsp_format = "fallback" }
+    end,
 
-    -- Also support async formatting after save
-    format_after_save = {
-      lsp_format = "fallback",
-    },
-
-    -- Logging & notifications
-    log_level = vim.log.levels.ERROR,
-    notify_on_error = true,
-    notify_no_formatters = true,
-
-    -- Custom formatters / overrides
+    -- Custom overrides (easy to extend)
     formatters = {
       prettier = {
         command = "prettier",
@@ -66,12 +63,16 @@ return {
         cwd = function()
           return vim.fn.getcwd()
         end,
-        require_cwd = false,
       },
     },
+
+    -- Minimal notifications
+    log_level = vim.log.levels.ERROR,
+    notify_on_error = true,
+    notify_no_formatters = true,
   },
+
   init = function()
-    -- If you want Conform as the default formatexpr
     vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
   end,
 }
