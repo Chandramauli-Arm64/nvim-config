@@ -14,6 +14,7 @@ return {
     "nvim-tree/nvim-web-devicons",
   },
   config = function()
+---@diagnostic disable-next-line: unused-local
     local telescope = require("telescope")
     local actions = require("telescope.actions")
     local builtin = require("telescope.builtin")
