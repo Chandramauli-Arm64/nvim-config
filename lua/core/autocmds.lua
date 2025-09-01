@@ -5,9 +5,12 @@ vim.api.nvim_create_autocmd("TextYankPost", {
   end,
 })
 
+-- Remove trailing whitespace on save
 vim.api.nvim_create_autocmd("BufWritePre", {
   pattern = "*",
   callback = function()
-    vim.cmd([[%s/\s\+$//e]]) -- Trim trailing whitespace on save
+    local save = vim.fn.winsaveview()
+    vim.cmd([[%s/\s\+$//e]])
+    vim.fn.winrestview(save)
   end,
 })
