@@ -1,17 +1,17 @@
--- Nerd Font icons for diagnostics
-local signs = { Error = " ", Warn = " ", Hint = "󰌵 ", Info = " " }
-for type, icon in pairs(signs) do
-  local hl = "DiagnosticSign" .. type
-  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
-end
-
--- Diagnostic configuration (cleaner UI)
+-- Diagnostic configuration (icons + clean UI)
 vim.diagnostic.config({
   virtual_text = false, -- disable inline spam
   float = { border = "rounded" },
-  signs = true,
   underline = true,
   update_in_insert = false,
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = " ",
+      [vim.diagnostic.severity.WARN] = " ",
+      [vim.diagnostic.severity.HINT] = "󰌵 ",
+      [vim.diagnostic.severity.INFO] = " ",
+    },
+  },
 })
 
 -- Handlers with borders for hover/signature
@@ -88,6 +88,7 @@ start_server(
   { "typescript-language-server", "--stdio" },
   { "typescript", "typescriptreact", "javascript", "javascriptreact" }
 )
+start_server({ "pyright-langserver", "--stdio" }, { "python" })
 
 -- Enable inlay hints + semantic tokens if available
 vim.api.nvim_create_autocmd("LspAttach", {
