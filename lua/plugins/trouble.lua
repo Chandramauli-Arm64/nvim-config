@@ -1,6 +1,5 @@
 return {
   "folke/trouble.nvim",
-  opts = {}, -- for default options, refer to the configuration section for custom setup.
   cmd = "Trouble",
   keys = {
     {
@@ -21,7 +20,7 @@ return {
     {
       "<leader>cl",
       "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
-      desc = "LSP Definitions / references / ... (Trouble)",
+      desc = "LSP (Defs/Refs/...)",
     },
     {
       "<leader>xL",
@@ -32,6 +31,53 @@ return {
       "<leader>xQ",
       "<cmd>Trouble qflist toggle<cr>",
       desc = "Quickfix List (Trouble)",
+    },
+  },
+  opts = {
+    auto_open = false, -- don’t pop up on its own
+    auto_close = true, -- closes when empty
+    auto_preview = false, -- previews are heavy on phone, disable
+    auto_refresh = true,
+    focus = false,
+    restore = true,
+    follow = false, -- avoids cursor auto-jumps
+    indent_guides = false, -- cleaner UI on small screen
+    max_items = 150, -- lighter than default 200
+    multiline = true,
+    warn_no_results = true,
+    preview = { type = "split", scratch = true }, -- split preview safer than floating on Termux
+    throttle = {
+      refresh = 50, -- less CPU stress
+      update = 30,
+      render = 30,
+      follow = 150,
+      preview = { ms = 200, debounce = true },
+    },
+    icons = {
+      indent = {
+        top = "│ ",
+        middle = "├─",
+        last = "└─",
+        fold_open = " ",
+        fold_closed = " ",
+        ws = "  ",
+      },
+      folder_closed = " ",
+      folder_open = " ",
+      kinds = {
+        Class = " ",
+        Constructor = " ",
+        Enum = " ",
+        Field = " ",
+        Function = "󰊕 ",
+        Interface = " ",
+        Method = "󰊕 ",
+        Module = " ",
+        Namespace = "󰦮 ",
+        Property = " ",
+        Struct = "󰆼 ",
+        Variable = "󰀫 ",
+      },
     },
   },
 }
