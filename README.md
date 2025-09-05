@@ -45,6 +45,12 @@ My simple neovim configuration for termux(android) based on **Lazy.vim** with a 
 git clone https://github.com/Chandramauli-Arm64/nvim-config ~/.config/nvim
 ```
 
+- **Windows**:
+
+```powershell
+git clone https://github.com/Chandramauli-Arm64/nvim-config.git $env:LOCALAPPDATA\nvim
+```
+
 ---
 
 ## THEME NOTES
