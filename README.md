@@ -61,7 +61,7 @@ git clone https://github.com/Chandramauli-Arm64/nvim-config ~/.config/nvim
 - Transparency disabled for stability in Termux.
 
 > [!IMPORTANT]
-> Tree-sitter **rainbow** is disabled to improve performance in **Termux**. If you have better device than mine then enable it re-write the code as per your liking.
+> Tree-sitter **rainbow** is disabled to improve performance in **Termux**. If you have better device than mine then enable it or re-write the code as per your liking.
 
 **Here**:-
 
