@@ -2,21 +2,16 @@
 
 [![Contributors](https://contrib.rocks/image?repo=Chandramauli-Arm64/nvim-config)](https://github.com/Chandramauli-Arm64/nvim-config/graphs/contributors)
 
-![Top Language](https://img.shields.io/github/languages/top/Chandramauli-Arm64/nvim-config?color=1abc9c&style=for-the-badge&logo=lua)
-
-![Visitors](https://vbr.nathanchung.dev/badge?page_id=Chandramauli-Arm64.nvim-config&logo=github&color=1abc9c&style=for-the-badge)
-
-![Repo Size](https://img.shields.io/github/repo-size/Chandramauli-Arm64/nvim-config?color=1abc9c&style=for-the-badge&logo=github)
-
-![Last Commit](https://img.shields.io/github/last-commit/Chandramauli-Arm64/nvim-config?color=1abc9c&style=for-the-badge&logo=git)
-
-![Stars](https://img.shields.io/github/stars/Chandramauli-Arm64/nvim-config?color=1abc9c&style=for-the-badge&logo=github)
-
-![Forks](https://img.shields.io/github/forks/Chandramauli-Arm64/nvim-config?color=1abc9c&style=for-the-badge&logo=github)
-
-![License](https://img.shields.io/github/license/Chandramauli-Arm64/nvim-config?color=1abc9c&style=for-the-badge&logo=open-source-initiative)
-
-![Neovim](https://img.shields.io/badge/Neovim-config-1abc9c?style=for-the-badge&logo=neovim&logoColor=white)
+<p align="center">
+  <img src="https://img.shields.io/github/languages/top/Chandramauli-Arm64/nvim-config?color=1abc9c&style=for-the-badge&logo=lua" alt="Top Language" />
+  <img src="https://vbr.nathanchung.dev/badge?page_id=Chandramauli-Arm64.nvim-config&logo=github&color=1abc9c&style=for-the-badge" alt="Visitors" />
+  <img src="https://img.shields.io/github/repo-size/Chandramauli-Arm64/nvim-config?color=1abc9c&style=for-the-badge&logo=github" alt="Repo Size" />
+  <img src="https://img.shields.io/github/last-commit/Chandramauli-Arm64/nvim-config?color=1abc9c&style=for-the-badge&logo=git" alt="Last Commit" />
+  <img src="https://img.shields.io/github/stars/Chandramauli-Arm64/nvim-config?color=1abc9c&style=for-the-badge&logo=github" alt="Stars" />
+  <img src="https://img.shields.io/github/forks/Chandramauli-Arm64/nvim-config?color=1abc9c&style=for-the-badge&logo=github" alt="Forks" />
+  <img src="https://img.shields.io/github/license/Chandramauli-Arm64/nvim-config?color=1abc9c&style=for-the-badge&logo=open-source-initiative" alt="License" />
+  <img src="https://img.shields.io/badge/Neovim-config-1abc9c?style=for-the-badge&logo=neovim&logoColor=white" alt="Neovim" />
+</p>
 
 ![Quote](https://quotes-github-readme.vercel.app/api?type=horizontal&theme=radical)
 
