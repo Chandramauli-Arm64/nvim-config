@@ -10,7 +10,7 @@
 
 # nvim-config
 
-My simple neovim configuration for termux(android).
+My simple neovim configuration for termux(android) based on **Lazy.vim** with a dark theme, some plugins, and workflow tweaks for ANDROID.
 
 **Device Info**:
 - REALME P1 5G
@@ -21,9 +21,41 @@ My simple neovim configuration for termux(android).
 
 ---
 
+## PLUGINS AND FEATURES
+
+- Theme: [OneDark Dark](https://github.com/olimorris/onedarkpro.nvim)
+- Lazy.nvim for plugin management.
+- Tree-sitter for syntax highlighting.
+- Telescope & FzF for fuzzy finding.
+- NativeLsp + Autocompletion (nvim-cmp, blinkcpm etc.).
+- Conform.nvim support for native formatting and linting.
+
+---
+
 **If you want to test it in your smartphone you can clone the repo**:
 
 ```
 git clone https://github.com/Chandramauli-Arm64/nvim-config ~/.config/nvim
 ```
 
+---
+
+## THEME NOTES
+
+- Default theme: onedark_dark.
+- You can switch theme as per your liking.
+- Don't use **italics** font. It will break while zooming or zoomeout.
+
+---
+
+## PERSONAL NOTES
+
+- Works on Termux(**Android**) and other platforms e.g Linux.
+- Transparency disabled for stability in Termux.
+- Tree-sitter **rainbow** is disabled for better performance in Android. If you have better device than mine.
+
+---
+
+## LICENSE
+
+This configuration is licensed under the [MIT License](LICENSE.md)
