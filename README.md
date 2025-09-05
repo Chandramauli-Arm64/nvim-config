@@ -60,7 +60,7 @@ git clone https://github.com/Chandramauli-Arm64/nvim-config ~/.config/nvim
 - Works on Termux(**Android**) and other platforms e.g Linux.
 - Transparency disabled for stability in Termux.
 
-> [!IMPORTENT]
+> [!IMPORTANT]
 > Tree-sitter **rainbow** is disabled to improve performance in **Termux**. If you have better device than mine then enable it re-write the code as per your liking.
 
 **Here**:-
