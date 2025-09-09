@@ -1,9 +1,11 @@
 -- File: lua/plugins/lualine.lua
-
 return {
   "nvim-lualine/lualine.nvim",
   event = "VeryLazy",
-  dependencies = { "nvim-tree/nvim-web-devicons" },
+  dependencies = {
+    "nvim-tree/nvim-web-devicons",
+    "linrongbin16/lsp-progress.nvim",
+  },
   config = function()
     local ok, lualine = pcall(require, "lualine")
     if not ok then
@@ -30,18 +32,10 @@ return {
         b = { bg = colors.bg, fg = colors.fg },
         c = { bg = colors.bg, fg = colors.fg },
       },
-      insert = {
-        a = { bg = colors.green, fg = colors.bg, gui = "bold" },
-      },
-      visual = {
-        a = { bg = colors.magenta, fg = colors.bg, gui = "bold" },
-      },
-      replace = {
-        a = { bg = colors.red, fg = colors.bg, gui = "bold" },
-      },
-      command = {
-        a = { bg = colors.yellow, fg = colors.bg, gui = "bold" },
-      },
+      insert = { a = { bg = colors.green, fg = colors.bg, gui = "bold" } },
+      visual = { a = { bg = colors.magenta, fg = colors.bg, gui = "bold" } },
+      replace = { a = { bg = colors.red, fg = colors.bg, gui = "bold" } },
+      command = { a = { bg = colors.yellow, fg = colors.bg, gui = "bold" } },
       inactive = {
         a = { bg = colors.bg, fg = colors.fg, gui = "bold" },
         b = { bg = colors.bg, fg = colors.fg },
@@ -70,6 +64,11 @@ return {
               unnamed = "[No Name]",
             },
           },
+          {
+            function()
+              return require("lsp-progress").progress()
+            end,
+          },
         },
         lualine_x = {
           {
@@ -93,6 +92,14 @@ return {
         lualine_z = {},
       },
       extensions = { "lazy", "nvim-tree", "fugitive", "toggleterm" },
+    })
+
+    -- refresh lualine when LSP progress updates
+    vim.api.nvim_create_augroup("lualine_augroup", { clear = true })
+    vim.api.nvim_create_autocmd("User", {
+      group = "lualine_augroup",
+      pattern = "LspProgressStatusUpdated",
+      callback = require("lualine").refresh,
     })
   end,
 }
