@@ -2,34 +2,52 @@ name: Luacheck
 
 on:
   push:
-    branches: ["main"] # Trigger on pushes to main branch
+    branches: ["main"]
   pull_request:
-    branches: ["main"] # Trigger on pull requests targeting main
+    branches: ["main"]
 
 jobs:
   luacheck:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        lua-version: [5.1, 5.4] # Add more Lua versions if needed
+
     steps:
+      # Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v5
 
+      # Setup Lua using the modern GH Actions Lua setup
+      - name: Setup Lua
+        uses: leafo/gh-actions-lua@v11
+        with:
+          lua-version: ${{ matrix.lua-version }}
+          luarocks: true # automatically installs LuaRocks
+
+      # Cache Luacheck installation
+      - name: Cache Luacheck
+        id: cache-luacheck
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.LUAROCKS_CONFIG_HOME }}/lib/luarocks/rocks-*/luacheck
+          key: luacheck-${{ matrix.lua-version }}-${{ hashFiles('**/luacheck*.rockspec') }}
+          restore-keys: |
+            luacheck-${{ matrix.lua-version }}-
+
+      # Install Luacheck if not cached
       - name: Install Luacheck
-        # Install luacheck using apt-get, which is standard for ubuntu-latest runners.
+        if: steps.cache-luacheck.outputs.cache-hit != 'true'
         run: luarocks install luacheck
 
-      - name: Run Luacheck and generate SARIF report
-        # The `--formatter sarif` flag is crucial.
-        # It tells luacheck to output its results in the SARIF format.
-        # We save the output to a file named luacheck-results.sarif.
+      # Run Luacheck and generate SARIF report
+      - name: Run Luacheck
         run: luacheck . --formatter sarif --output luacheck-results.sarif
-        # We use continue-on-error to ensure the next step runs even if luacheck finds issues.
         continue-on-error: true
 
-      - name: Upload SARIF report to GitHub Code Scanning
-        # This action is provided by GitHub and uploads a SARIF file to the Security tab.
+      # Upload SARIF report to GitHub Code Scanning
+      - name: Upload SARIF report
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: luacheck-results.sarif
-          # The 'category' is important for giving your tool a unique name in the UI.
           category: luacheck
-          
