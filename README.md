@@ -159,6 +159,7 @@ return {
   end,
 }
 ```
+<details>
 
 ---
 
