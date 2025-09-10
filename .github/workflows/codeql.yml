@@ -15,7 +15,7 @@ jobs:
 
       - name: Install Luacheck
         # Install luacheck using apt-get, which is standard for ubuntu-latest runners.
-        run: sudo apt-get update && sudo apt-get install -y luacheck
+        run: luarocks install luacheck
 
       - name: Run Luacheck and generate SARIF report
         # The `--formatter sarif` flag is crucial.
