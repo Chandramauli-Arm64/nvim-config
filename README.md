@@ -30,12 +30,17 @@ My simple neovim configuration for termux(android) based on **Lazy.vim** with a 
 
 ## PLUGINS AND FEATURES
 
+- No nonsense plugins which you will never use.
+- Simple, efficient, reliable setup.
 - Theme: [OneDark Dark](https://github.com/olimorris/onedarkpro.nvim)
 - Lazy.nvim for plugin management.
 - Tree-sitter for syntax highlighting.
 - Telescope & FzF for fuzzy finding.
 - NativeLsp + Autocompletion (nvim-cmp, blinkcpm etc.).
 - Conform.nvim support for native formatting and linting.
+- Which-key.nvim if you forget the keymappings.
+- Render-markdown.nvim for better writing experience.
+- Folke/trouble.nvim for issue hunting.
 
 ---
 
@@ -57,7 +62,7 @@ git clone https://github.com/Chandramauli-Arm64/nvim-config.git $env:LOCALAPPDAT
 
 - Default theme: onedark_dark.
 - You can switch theme as per your liking.
-- Don't use **italics** font. It will break while zooming or zoomeout.
+- For Termux users, don't use **italics** font. It will break while zooming or zoomeout.
 
 ---
 
@@ -65,6 +70,9 @@ git clone https://github.com/Chandramauli-Arm64/nvim-config.git $env:LOCALAPPDAT
 
 - Works on Termux(**Android**) and other platforms e.g Linux.
 - Transparency disabled for stability in Termux.
+- The codes you will find in this config is not written by me and taken from official docs of plugins.
+- There are some **AI** written codes too but they have been written via taking the direct reference from the official documentation.
+- This config is not perfect and I will try to make it better not perfect because perfectism is an illusion.
 
 > [!IMPORTANT]
 > Tree-sitter **rainbow** is disabled to improve performance in **Termux**. If you have better device than mine then enable it or re-write the code as per your liking.
@@ -159,10 +167,20 @@ return {
   end,
 }
 ```
-<details>
+</details>
+
+---
+
+## CONTRIBUTION
+
+Check [Contribution](CONTRIBUTING.md) for more information.
 
 ---
 
 ## LICENSE
 
 This configuration is licensed under the [MIT License](LICENSE.md)
+
+---
+
+### THANKS FOR READING!
