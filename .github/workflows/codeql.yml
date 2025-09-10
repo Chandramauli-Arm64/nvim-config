@@ -1,0 +1,35 @@
+name: Luacheck
+
+on:
+  push:
+    branches: ["main"] # Trigger on pushes to main branch
+  pull_request:
+    branches: ["main"] # Trigger on pull requests targeting main
+
+jobs:
+  luacheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Install Luacheck
+        # Install luacheck using apt-get, which is standard for ubuntu-latest runners.
+        run: sudo apt-get update && sudo apt-get install -y luacheck
+
+      - name: Run Luacheck and generate SARIF report
+        # The `--formatter sarif` flag is crucial.
+        # It tells luacheck to output its results in the SARIF format.
+        # We save the output to a file named luacheck-results.sarif.
+        run: luacheck . --formatter sarif --output luacheck-results.sarif
+        # We use continue-on-error to ensure the next step runs even if luacheck finds issues.
+        continue-on-error: true
+
+      - name: Upload SARIF report to GitHub Code Scanning
+        # This action is provided by GitHub and uploads a SARIF file to the Security tab.
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: luacheck-results.sarif
+          # The 'category' is important for giving your tool a unique name in the UI.
+          category: luacheck
+          
