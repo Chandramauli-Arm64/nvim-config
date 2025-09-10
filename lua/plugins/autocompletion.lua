@@ -109,7 +109,14 @@ return {
           end
         end, { "i", "s" }),
 
-        ["<CR>"] = cmp.mapping.confirm({ select = true }), -- easier confirm
+        ["<CR>"] = cmp.mapping(function(fallback)
+          if cmp.visible() and cmp.get_selected_entry() then
+            cmp.confirm({ select = false })
+          else
+            fallback()
+          end
+        end, { "i", "s" }),
+
         ["<C-Space>"] = cmp.mapping.complete(),
         ["<C-b>"] = cmp.mapping.scroll_docs(-4),
         ["<C-f>"] = cmp.mapping.scroll_docs(4),
@@ -161,7 +168,6 @@ return {
         "Previous completion item / jump snippet",
         mode = { "i", "s" },
       },
-      { "<CR>", "Confirm completion", mode = "i" },
       { "<C-Space>", "Trigger completion menu", mode = "i" },
       { "<C-b>", "Scroll docs up", mode = "i" },
       { "<C-f>", "Scroll docs down", mode = "i" },
