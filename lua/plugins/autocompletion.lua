@@ -29,6 +29,8 @@ return {
   config = function()
     local cmp = require("cmp")
     local luasnip = require("luasnip")
+    local wk = require("which-key")
+
     luasnip.config.setup({})
 
     -- Nerd Font icons
@@ -149,5 +151,24 @@ return {
       cmp.setup({ enabled = not cmp_enabled })
       print("Cmp " .. (cmp_enabled and "OFF" or "ON"))
     end, { desc = "Toggle cmp" })
+
+    -- Register with which-key
+    wk.add({
+      -- Insert/Select mode keymaps
+      { "<Tab>", "Next completion item / expand snippet", mode = { "i", "s" } },
+      {
+        "<S-Tab>",
+        "Previous completion item / jump snippet",
+        mode = { "i", "s" },
+      },
+      { "<CR>", "Confirm completion", mode = "i" },
+      { "<C-Space>", "Trigger completion menu", mode = "i" },
+      { "<C-b>", "Scroll docs up", mode = "i" },
+      { "<C-f>", "Scroll docs down", mode = "i" },
+
+      -- Normal mode utility
+      { "<leader>u", group = "utility" },
+      { "<leader>ut", desc = "Toggle cmp (completion engine)", mode = "n" },
+    })
   end,
 }
