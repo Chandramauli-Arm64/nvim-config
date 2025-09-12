@@ -11,6 +11,7 @@
   <img src="https://img.shields.io/github/forks/Chandramauli-Arm64/nvim-config?color=1abc9c&style=for-the-badge&logo=github" alt="Forks" />
   <img src="https://img.shields.io/github/license/Chandramauli-Arm64/nvim-config?color=1abc9c&style=for-the-badge&logo=open-source-initiative" alt="License" />
   <img src="https://img.shields.io/badge/Neovim-config-1abc9c?style=for-the-badge&logo=neovim&logoColor=white" alt="Neovim" />
+  <img src="https://img.shields.io/github/traffic-sources-clones/Chandramauli-Arm64/nvim-config?style=for-the-badge&logo=github&logoColor=white&color=1abc9c" alt="Clones" />
 </p>
 
 ![Quote](https://quotes-github-readme.vercel.app/api?type=horizontal&theme=radical)
