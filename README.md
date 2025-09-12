@@ -41,6 +41,41 @@ My simple neovim configuration for termux(android) based on **Lazy.vim** with a 
 - Which-key.nvim if you forget the keymappings.
 - Render-markdown.nvim for better writing experience.
 - Folke/trouble.nvim for issue hunting.
+- **PLUGINS**: 25 ( 11 lazy loaded)
+
+---
+
+## Metrics (from my logs)
+
+- **Startup Time**: 234.86ms
+
+  - LazyStart: 25.17ms
+
+  - LazyDone: 219.19ms (+194.03ms)
+
+  - UIEnter: 234.86ms (+15.66ms)
+
+
+- **Plugin Load Times (Top Heavy)**
+
+  - nvim-tree.lua: 108.57ms
+
+  - telescope.nvim: 87.81ms
+
+  - nvim-treesitter: 51.73ms
+
+  - onedarkpro.nvim: 32.42ms
+
+  - lualine.nvim (+ lsp-progress): 42.64ms
+
+
+- **Light Plugins (under 5ms)**
+
+  - cmp-nvim-lsp: 5.24ms
+
+  - which-key.nvim: 6.62ms (init)
+
+  - Most cmp + linting extensions: 0.5–3ms
 
 ---
 
