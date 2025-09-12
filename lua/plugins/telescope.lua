@@ -57,7 +57,7 @@ return {
     vim.keymap.set("n", "bb", builtin.buffers, { desc = "Find Buffers" })
     vim.keymap.set("n", "gg", builtin.git_files, { desc = "Find Git Files" })
     vim.keymap.set("n", "lg", builtin.live_grep, { desc = "Live Grep" })
-    vim.keymap.set("n", "hh", builtin.help_tags, { desc = "Help Tags" })
+    vim.keymap.set("n", "ht", builtin.help_tags, { desc = "Help Tags" })
     vim.keymap.set("n", "ss", function()
       builtin.lsp_document_symbols({
         symbols = { "Class", "Function", "Method", "Constructor" },
@@ -108,7 +108,7 @@ return {
         desc = "Live Grep",
       },
       {
-        "hh",
+        "ht",
         function()
           require("telescope.builtin").help_tags()
         end,
