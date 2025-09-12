@@ -47,7 +47,7 @@ My simple neovim configuration for termux(android) based on **Lazy.vim** with a 
 
 ## Metrics (from my logs)
 
-- **Startup Time**: 234.86ms
+- **Startup Time**: 178.7ms-234.86ms
 
   - LazyStart: 25.17ms
 

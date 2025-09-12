@@ -1,6 +1,6 @@
 return {
   "hrsh7th/nvim-cmp",
-  event = "InsertEnter", -- lazy load cmp when entering insert mode
+  event = { "LspAttach" },
   ft = { "lua", "python", "javascript", "typescript", "vue", "css", "html" },
   dependencies = {
     -- Core completion sources
