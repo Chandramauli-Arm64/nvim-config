@@ -108,6 +108,7 @@ git clone https://github.com/Chandramauli-Arm64/nvim-config.git $env:LOCALAPPDAT
 - The codes you will find in this config is not written by me and taken from official docs of plugins.
 - There are some **AI** written codes too but they have been written via taking the direct reference from the official documentation.
 - This config is not perfect and I will try to make it better not perfect because perfectism is an illusion.
+- I don't why but when you open this configuration in Windows it will take 3s to 5s when you open for the first time and after opening & closing for 2 or 3 times then the startup times get reduced to under 250ms.
 
 > [!IMPORTANT]
 > Tree-sitter **rainbow** is disabled to improve performance in **Termux**. If you have better device than mine then enable it or re-write the code as per your liking.
