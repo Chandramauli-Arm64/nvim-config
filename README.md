@@ -108,7 +108,16 @@ git clone https://github.com/Chandramauli-Arm64/nvim-config.git $env:LOCALAPPDAT
 - The codes you will find in this config is not written by me and taken from official docs of plugins.
 - There are some **AI** written codes too but they have been written via taking the direct reference from the official documentation.
 - This config is not perfect and I will try to make it better not perfect because perfectism is an illusion.
-- I don't why but when you open this configuration in Windows it will take 3s to 5s when you open for the first time and after opening & closing for 2 or 3 times then the startup times get reduced to under 250ms.
+
+> [!NOTE]
+> On Windows the first launch of this Neovim configuration is noticeably slower
+> —about `3 – 5` seconds.
+> After you open and close Neovim a couple of times, the startup time drops to
+> around `178 – 250 ms`.
+> This happens because, during the initial launches, Windows is still caching
+> DLLs and other files and the antivirus is performing its first scans.
+> Once those resources are cached in memory and scanned, subsequent starts are
+> much faster. As per my analysis.
 
 > [!IMPORTANT]
 > Tree-sitter **rainbow** is disabled to improve performance in **Termux**. If you have better device than mine then enable it or re-write the code as per your liking.
