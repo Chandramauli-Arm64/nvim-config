@@ -53,7 +53,12 @@ return {
     pcall(require("telescope").load_extension, "ui-select")
 
     -- Mobile-friendly keymaps
-    vim.keymap.set("n", "ff", builtin.find_files, { desc = "Find Files" })
+    vim.keymap.set(
+      "n",
+      "<leader>ff",
+      builtin.find_files,
+      { desc = "Find Files" }
+    )
     vim.keymap.set("n", "bb", builtin.buffers, { desc = "Find Buffers" })
     vim.keymap.set("n", "gg", builtin.git_files, { desc = "Find Git Files" })
     vim.keymap.set("n", "lg", builtin.live_grep, { desc = "Live Grep" })
@@ -80,7 +85,7 @@ return {
       { "f", group = "Find/Search", mode = "n" },
 
       {
-        "ff",
+        "<leader>ff",
         function()
           require("telescope.builtin").find_files()
         end,

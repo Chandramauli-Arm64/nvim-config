@@ -1,6 +1,6 @@
 -- Diagnostic configuration (icons + clean UI)
 vim.diagnostic.config({
-  virtual_text = false, -- disable inline spam
+  virtual_text = true, -- disable/enable for your own preference
   float = { border = "rounded" },
   underline = true,
   update_in_insert = false,
