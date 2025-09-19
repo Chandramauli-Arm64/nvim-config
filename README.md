@@ -137,16 +137,9 @@ return {
       -- Languages to install
       ensure_installed = {
         "bash",
-        "c",
-        "cpp",
-        "css",
-        "html",
-        "javascript",
-        "json",
         "lua",
         "markdown",
         "markdown_inline",
-        "python",
         "query",
         "regex",
         "vim",
