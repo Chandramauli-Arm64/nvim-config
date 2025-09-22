@@ -73,9 +73,18 @@ return {
 
       completion = {
         completeopt = "menu,menuone,noinsert",
-        autocomplete = { cmp.TriggerEvent.TextChanged },
+        autocomplete = { cmp.TriggerEvent.InsertEnter },
         keyword_length = 1,
         max_item_count = 8, -- compact list for mobile
+      },
+
+      performance = {
+        debounce = 60, -- ms to wait after input before triggering completion
+        throttle = 30, -- ms to wait before updating completion menu
+        fetching_timeout = 500,
+        confirm_resolve_timeout = 80,
+        async_budget = 1,
+        max_view_entries = 120,
       },
 
       window = {
