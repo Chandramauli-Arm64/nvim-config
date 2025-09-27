@@ -109,6 +109,13 @@ git clone https://github.com/Chandramauli-Arm64/nvim-config.git $env:LOCALAPPDAT
 - There are some **AI** written codes too but they have been written via taking the direct reference from the official documentation.
 - This config is not perfect and I will try to make it better not perfect because perfectism is an illusion.
 
+> [!WARNING]
+> The current `lsp.lua` setup may not work correctly with all language servers or file types, even when an LSP client appears attached besides `lua_ls`. This is due to an incomplete or non-standard setup using the new `vim.lsp` API.
+
+I am aware of these issues and plan to either fix them soon or migrate back to a more stable configuration using `nvim-lspconfig`.
+
+**Please proceed with caution** if you rely on LSP features for multiple languages, as some functionality (e.g., hover, diagnostics, code actions) may not behave as expected.
+
 > [!NOTE]
 > On Windows the first launch of this Neovim configuration is noticeably slower
 > —about `3 – 5` seconds.
