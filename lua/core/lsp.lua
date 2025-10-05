@@ -7,9 +7,9 @@ vim.diagnostic.config({
   signs = {
     text = {
       [vim.diagnostic.severity.ERROR] = " ",
-      [vim.diagnostic.severity.WARN]  = " ",
-      [vim.diagnostic.severity.HINT]  = "󰌵 ",
-      [vim.diagnostic.severity.INFO]  = " ",
+      [vim.diagnostic.severity.WARN] = " ",
+      [vim.diagnostic.severity.HINT] = "󰌵 ",
+      [vim.diagnostic.severity.INFO] = " ",
     },
   },
 })
@@ -23,14 +23,22 @@ local on_attach = function(_, bufnr)
   -- Core navigation
   bufmap("n", "gd", vim.lsp.buf.definition, "Go to Definition")
   bufmap("n", "gr", vim.lsp.buf.references, "Find References")
-  bufmap("n", "K", function() vim.lsp.buf.hover({ border = "rounded" }) end, "Hover Docs")
+  bufmap("n", "K", function()
+    vim.lsp.buf.hover({ border = "rounded" })
+  end, "Hover Docs")
   bufmap("n", "<leader>rn", vim.lsp.buf.rename, "Rename Symbol")
   bufmap("n", "ca", vim.lsp.buf.code_action, "Code Action")
-  bufmap("n", "<leader>sh", function() vim.lsp.buf.signature_help({ border = "rounded" }) end, "Signature Help")
+  bufmap("n", "<leader>sh", function()
+    vim.lsp.buf.signature_help({ border = "rounded" })
+  end, "Signature Help")
 
   -- Diagnostics navigation (Neovim 0.11+)
-  vim.keymap.set("n", "[d", function() vim.diagnostic.jump({ count = -1, float = true }) end, { buffer = bufnr, desc = "Prev Diagnostic" })
-  vim.keymap.set("n", "]d", function() vim.diagnostic.jump({ count = 1, float = true }) end, { buffer = bufnr, desc = "Next Diagnostic" })
+  vim.keymap.set("n", "[d", function()
+    vim.diagnostic.jump({ count = -1, float = true })
+  end, { buffer = bufnr, desc = "Prev Diagnostic" })
+  vim.keymap.set("n", "]d", function()
+    vim.diagnostic.jump({ count = 1, float = true })
+  end, { buffer = bufnr, desc = "Next Diagnostic" })
   bufmap("n", "<leader>d", vim.diagnostic.open_float, "Line Diagnostics")
 
   -- Symbols navigation
@@ -50,13 +58,16 @@ local function start_server(cmd, filetypes, settings)
   if vim.fn.executable(cmd[1]) == 1 then
     vim.api.nvim_create_autocmd("FileType", {
       pattern = filetypes,
- --@diagnostic disable-next-line: unused-local
+      ---@diagnostic disable-next-line: unused-local
       callback = function(args)
         vim.lsp.start({
           name = cmd[1],
           cmd = cmd,
           root_dir = vim.fs.dirname(
-            vim.fs.find({ "init.lua", "package.json", ".git", ".root" }, { upward = true })[1]
+            vim.fs.find(
+              { "init.lua", "package.json", ".git", ".root" },
+              { upward = true }
+            )[1]
           ),
           on_attach = on_attach,
           capabilities = capabilities,
@@ -76,7 +87,10 @@ start_server({ "lua-language-server" }, { "lua" }, {
       path = vim.split(package.path, ";"),
     },
     diagnostics = { globals = { "vim" } },
-    workspace = { library = vim.api.nvim_get_runtime_file("", true), checkThirdParty = false },
+    workspace = {
+      library = vim.api.nvim_get_runtime_file("", true),
+      checkThirdParty = false,
+    },
     format = { enable = true },
     hint = { enable = true },
     telemetry = { enable = false },
@@ -150,7 +164,7 @@ start_server(
       format = { enable = false },
       implementationsCodeLens = { enabled = true },
       referencesCodeLens = { enabled = true },
-    }
+    },
   }
 )
 
@@ -178,14 +192,22 @@ vim.api.nvim_create_autocmd("LspAttach", {
     local bufnr = args.buf
 
     -- Safely check for inlay hints provider
-    if client and client.server_capabilities and client.server_capabilities.inlayHintProvider then
+    if
+      client
+      and client.server_capabilities
+      and client.server_capabilities.inlayHintProvider
+    then
       if vim.lsp.inlay_hint then
         vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
       end
     end
 
     -- Safely check for semantic tokens provider
-    if client and client.server_capabilities and client.server_capabilities.semanticTokensProvider then
+    if
+      client
+      and client.server_capabilities
+      and client.server_capabilities.semanticTokensProvider
+    then
       if vim.lsp.semantic_tokens and vim.lsp.semantic_tokens.start then
         vim.lsp.semantic_tokens.start(bufnr, client.id)
       end
@@ -233,13 +255,27 @@ vim.api.nvim_create_user_command("NativeLspInfo", function()
 
     local caps = client.server_capabilities or {}
     local cap_list = {}
-    if caps.hoverProvider then table.insert(cap_list, "hover") end
-    if caps.renameProvider then table.insert(cap_list, "rename") end
-    if caps.definitionProvider then table.insert(cap_list, "definition") end
-    if caps.referencesProvider then table.insert(cap_list, "references") end
-    if caps.documentFormattingProvider then table.insert(cap_list, "formatting") end
-    if caps.documentRangeFormattingProvider then table.insert(cap_list, "range_formatting") end
-    if caps.completionProvider then table.insert(cap_list, "completion") end
+    if caps.hoverProvider then
+      table.insert(cap_list, "hover")
+    end
+    if caps.renameProvider then
+      table.insert(cap_list, "rename")
+    end
+    if caps.definitionProvider then
+      table.insert(cap_list, "definition")
+    end
+    if caps.referencesProvider then
+      table.insert(cap_list, "references")
+    end
+    if caps.documentFormattingProvider then
+      table.insert(cap_list, "formatting")
+    end
+    if caps.documentRangeFormattingProvider then
+      table.insert(cap_list, "range_formatting")
+    end
+    if caps.completionProvider then
+      table.insert(cap_list, "completion")
+    end
 
     print("      Capabilities: " .. table.concat(cap_list, ", "))
   end
