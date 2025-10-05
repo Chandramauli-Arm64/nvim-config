@@ -1,6 +1,6 @@
 return {
   "hrsh7th/nvim-cmp",
-  event = { "LspAttach" },
+  event = { "InsertEnter" },
   ft = { "lua", "python", "javascript", "typescript", "vue", "css", "html" },
   dependencies = {
     -- Core completion sources
@@ -73,7 +73,7 @@ return {
 
       completion = {
         completeopt = "menu,menuone,noinsert",
-        autocomplete = { cmp.TriggerEvent.InsertEnter },
+        autocomplete = { cmp.TriggerEvent.TextChanged },
         keyword_length = 1,
         max_item_count = 8, -- compact list for mobile
       },
