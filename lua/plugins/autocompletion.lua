@@ -1,6 +1,6 @@
 return {
   "hrsh7th/nvim-cmp",
-  event = { "InsertEnter" },
+  event = { "LspAttach" },
   ft = { "lua", "python", "javascript", "typescript", "vue", "css", "html" },
   dependencies = {
     -- Core completion sources

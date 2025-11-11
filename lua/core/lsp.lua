@@ -65,7 +65,7 @@ local function start_server(cmd, filetypes, settings)
           cmd = cmd,
           root_dir = vim.fs.dirname(
             vim.fs.find(
-              { "init.lua", "package.json", ".git", ".root" },
+              { "init.lua", "package.json", ".git", ".luarc.json", ".root" },
               { upward = true }
             )[1]
           ),
@@ -81,47 +81,45 @@ end
 
 -- Configure servers (system binaries only)
 start_server({ "lua-language-server" }, { "lua" }, {
-  Lua = {
-    runtime = {
-      version = "LuaJIT",
-      path = vim.split(package.path, ";"),
+  settings = {
+    Lua = {
+      runtime = {
+        version = "LuaJIT",
+        path = vim.split(package.path, ";"),
+      },
+      diagnostics = {
+        globals = { "vim" },
+      },
+      workspace = {
+        library = vim.api.nvim_get_runtime_file("", true),
+        checkThirdParty = false,
+      },
+      format = { enable = true },
+      hint = { enable = true },
+      telemetry = { enable = false },
     },
-    diagnostics = { globals = { "vim" } },
-    workspace = {
-      library = vim.api.nvim_get_runtime_file("", true),
-      checkThirdParty = false,
-    },
-    format = { enable = true },
-    hint = { enable = true },
-    telemetry = { enable = false },
   },
 })
 
-start_server({ "clangd" }, { "c", "cpp" }, {
+start_server({ "clangd" }, { "c", "cpp", "objc", "objcpp" }, {
   clangd = {
     completion = { enableSnippets = true },
     inlayHints = { enable = true },
     formatting = { style = "file" },
+    diagnostics = { enable = true },
+    semanticHighlighting = true,
   },
 })
 
-start_server({ "ccls" }, { "c", "cpp" }, {
-  ccls = {
-    highlight = { lsRanges = true },
-    cache = { directory = ".ccls-cache" },
-    completion = { filterAndSort = true },
-  },
-})
-
-start_server({ "yaml-language-server", "--stdio" }, { "yaml" }, {
-  yaml = {
-    schemas = { kubernetes = "/*.k8s.yaml" },
-    completion = true,
-    hover = true,
-    validate = true,
-    format = { enable = false },
-  },
-})
+-- start_server({ "yaml-language-server", "--stdio" }, { "yaml" }, {
+--  yaml = {
+--   schemas = { kubernetes = "/*.k8s.yaml" },
+---   completion = true,
+---   hover = true,
+--   validate = true,
+--   format = { enable = false },
+-- },
+--- })
 
 start_server(
   { "typescript-language-server", "--stdio" },
@@ -185,32 +183,121 @@ start_server({ "pyright-langserver", "--stdio" }, { "python" }, {
   },
 })
 
+start_server(
+  { "tclsh", "/data/data/com.termux/files/home/lsp/lsp_server.tcl" },
+  { "tcl" },
+  {
+    tcl = {
+      diagnostics = true,
+      completion = true,
+      hover = true,
+    },
+  }
+)
+
+start_server({
+  "/data/data/com.termux/files/usr/bin/vscode-css-language-server",
+  "--stdio",
+}, { "css", "scss", "less" }, {
+  css = {
+    validate = true, -- Enable syntax and lint validation
+    lint = {
+      unknownAtRules = "warning", -- Warn about unknown @ rules
+      boxModel = "warning", -- Warn about box model issues
+      duplicateProperties = "warning",
+      emptyRules = "warning",
+      important = "warning",
+      shorthandProperties = "warning",
+      vendorPrefix = "warning",
+      zeroUnits = "warning",
+    },
+    completion = {
+      completePropertyWithSemicolon = true,
+      triggerPropertyValueCompletion = true,
+    },
+    hover = true, -- Enable hover documentation
+    colorProvider = true, -- Enable color highlighting
+    format = {
+      enable = true, -- Enable formatting
+    },
+    -- You can add custom data paths or css modules if needed:
+    -- customData = { "/path/to/your/custom-data.json" },
+    -- cssModules = { enable = true },
+  },
+  scss = {
+    validate = true,
+    lint = {
+      unknownAtRules = "warning",
+      boxModel = "warning",
+      duplicateProperties = "warning",
+      emptyRules = "warning",
+      important = "warning",
+      shorthandProperties = "warning",
+      vendorPrefix = "warning",
+      zeroUnits = "warning",
+    },
+    completion = {
+      completePropertyWithSemicolon = true,
+      triggerPropertyValueCompletion = true,
+    },
+    hover = true,
+    colorProvider = true,
+    format = { enable = true },
+  },
+  less = {
+    validate = true,
+    lint = {
+      unknownAtRules = "warning",
+      boxModel = "warning",
+      duplicateProperties = "warning",
+      emptyRules = "warning",
+      important = "warning",
+      shorthandProperties = "warning",
+      vendorPrefix = "warning",
+      zeroUnits = "warning",
+    },
+    completion = {
+      completePropertyWithSemicolon = true,
+      triggerPropertyValueCompletion = true,
+    },
+    hover = true,
+    colorProvider = true,
+    format = { enable = true },
+  },
+})
+
 -- Enable inlay hints + semantic tokens if available (Neovim 0.11+ safe)
 vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(args)
     local client = vim.lsp.get_client_by_id(args.data.client_id)
     local bufnr = args.buf
 
-    -- Safely check for inlay hints provider
-    if
-      client
-      and client.server_capabilities
-      and client.server_capabilities.inlayHintProvider
-    then
-      if vim.lsp.inlay_hint then
-        vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
-      end
+    if not client or not client.server_capabilities then
+      return
     end
 
-    -- Safely check for semantic tokens provider
+    --  Inlay hints (new API)
+    if client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
+      vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+    end
+
+    --  Semantic tokens
     if
-      client
-      and client.server_capabilities
-      and client.server_capabilities.semanticTokensProvider
+      client.server_capabilities.semanticTokensProvider
+      and vim.lsp.semantic_tokens
     then
-      if vim.lsp.semantic_tokens and vim.lsp.semantic_tokens.start then
-        vim.lsp.semantic_tokens.start(bufnr, client.id)
-      end
+      vim.lsp.semantic_tokens.start(bufnr, client.id)
+
+      -- light refresh on insert leave
+      local group =
+        vim.api.nvim_create_augroup("LspSemanticRefresh", { clear = false })
+      vim.api.nvim_create_autocmd("InsertLeave", {
+        group = group,
+        buffer = bufnr,
+        callback = function()
+          pcall(vim.lsp.semantic_tokens.force_refresh)
+        end,
+      })
     end
   end,
 })

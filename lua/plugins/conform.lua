@@ -29,6 +29,8 @@ return {
       end,
       javascript = { "prettier" },
       typescript = { "prettier" },
+      javascriptreact = { "prettier" },
+      typescriptreact = { "prettier" },
       vue = { "prettier" },
       css = { "prettier" },
       html = { "prettier" },
@@ -36,6 +38,7 @@ return {
       yaml = { "prettier" },
       ["*"] = { "codespell" }, -- apply everywhere
       ["_"] = { "trim_whitespace" }, -- fallback
+      cpp = { "clang-format" },
     },
 
     -- Unified formatting options
