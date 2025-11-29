@@ -17,7 +17,7 @@
 
 # nvim-config
 
-My simple neovim configuration for termux(android) based on **Lazy.vim** with a dark theme, some plugins, and workflow tweaks for ANDROID.
+My neovim setup for android.
 
 **Device Info**:
 - REALME P1 5G
