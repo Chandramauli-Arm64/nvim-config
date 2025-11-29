@@ -14,6 +14,9 @@ return {
       -- markdown   = { "markdownlint" },
       -- sh         = { "shellcheck" },
       yaml = { "yamllint" },
+      perl = { "perlcritic" },
+      c = { "clangtidy" },
+      cpp = { "clangtidy" },
       -- Add additional mappings as needed
     }
 
@@ -22,6 +25,18 @@ return {
     lint.linters.eslint_d.args = { "--format", "json" }
     lint.linters.flake8 = lint.linters.flake8 or {}
     lint.linters.flake8.args = { "--format=default" }
+    -- Example within nvim-lint configuration
+    lint.linters.luacheck.args = { "--globals", "vim", "--" }
+    lint.linters.clangtidy =
+      vim.tbl_deep_extend("force", lint.linters.clangtidy or {}, {
+        args = {
+          "--quiet",
+          "--export-fixes=-",
+          "--format-style=llvm",
+          "--",
+          "-std=c++17",
+        },
+      })
 
     -- Automatically lint on buffer write or when leaving insert mode
     vim.api.nvim_create_autocmd({ "BufWritePost", "InsertLeave" }, {

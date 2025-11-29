@@ -39,6 +39,7 @@ return {
       ["*"] = { "codespell" }, -- apply everywhere
       ["_"] = { "trim_whitespace" }, -- fallback
       cpp = { "clang-format" },
+      perl = { "perltidy" },
     },
 
     -- Unified formatting options
