@@ -56,3 +56,6 @@ opt.splitbelow = true
 -- Disable netrw completely
 g.loaded_netrw = 1
 g.loaded_netrwPlugin = 1
+
+-- fileencoding
+vim.o.fileencoding = "utf-8"

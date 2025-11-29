@@ -88,7 +88,7 @@ start_server({ "lua-language-server" }, { "lua" }, {
         path = vim.split(package.path, ";"),
       },
       diagnostics = {
-        globals = { "vim" },
+        globals = {},
       },
       workspace = {
         library = vim.api.nvim_get_runtime_file("", true),
@@ -183,17 +183,13 @@ start_server({ "pyright-langserver", "--stdio" }, { "python" }, {
   },
 })
 
-start_server(
-  { "tclsh", "/data/data/com.termux/files/home/lsp/lsp_server.tcl" },
-  { "tcl" },
-  {
-    tcl = {
-      diagnostics = true,
-      completion = true,
-      hover = true,
-    },
-  }
-)
+start_server({ "pls" }, { "perl" }, {
+  perl = {
+    enableFormatting = false,
+    enableLinting = true,
+    logLevel = "error",
+  },
+})
 
 start_server({
   "/data/data/com.termux/files/usr/bin/vscode-css-language-server",
