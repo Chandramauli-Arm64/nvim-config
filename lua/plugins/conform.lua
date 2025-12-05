@@ -39,7 +39,9 @@ return {
       ["*"] = { "codespell" }, -- apply everywhere
       ["_"] = { "trim_whitespace" }, -- fallback
       cpp = { "clang-format" },
+      c = { "clang-format" },
       perl = { "perltidy" },
+      sql = { "sql-formatter" },
     },
 
     -- Unified formatting options
@@ -67,6 +69,11 @@ return {
         cwd = function()
           return vim.fn.getcwd()
         end,
+      },
+      sql_formatter = {
+        command = "sql-formatter",
+        args = { "--language", "mysql" },
+        stdin = true,
       },
     },
 

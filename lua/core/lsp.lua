@@ -20,7 +20,6 @@ local on_attach = function(_, bufnr)
     vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
   end
 
-  -- Core navigation
   bufmap("n", "gd", vim.lsp.buf.definition, "Go to Definition")
   bufmap("n", "gr", vim.lsp.buf.references, "Find References")
   bufmap("n", "K", function()
@@ -32,7 +31,6 @@ local on_attach = function(_, bufnr)
     vim.lsp.buf.signature_help({ border = "rounded" })
   end, "Signature Help")
 
-  -- Diagnostics navigation (Neovim 0.11+)
   vim.keymap.set("n", "[d", function()
     vim.diagnostic.jump({ count = -1, float = true })
   end, { buffer = bufnr, desc = "Prev Diagnostic" })
@@ -41,7 +39,6 @@ local on_attach = function(_, bufnr)
   end, { buffer = bufnr, desc = "Next Diagnostic" })
   bufmap("n", "<leader>d", vim.diagnostic.open_float, "Line Diagnostics")
 
-  -- Symbols navigation
   bufmap("n", "<leader>ds", vim.lsp.buf.document_symbol, "Document Symbols")
   bufmap("n", "<leader>ws", vim.lsp.buf.workspace_symbol, "Workspace Symbols")
 end
@@ -53,26 +50,124 @@ if cmp_ok then
   capabilities = cmp_nvim_lsp.default_capabilities()
 end
 
--- Function to start a server
+-- [Updated root detection and start_server go here]
+local root_markers = {
+  ".git",
+  ".hg",
+  ".root",
+  ".project",
+  ".env",
+  ".venv",
+  "init.lua",
+  ".luarc.json",
+  ".luacheckrc",
+  "package.json",
+  "tsconfig.json",
+  "jsconfig.json",
+  "yarn.lock",
+  "pnpm-lock.yaml",
+  "requirements.txt",
+  "setup.py",
+  "pyproject.toml",
+  "Pipfile",
+  "tox.ini",
+  "Cargo.toml",
+  "go.mod",
+  "go.work",
+  "Makefile",
+  "CMakeLists.txt",
+  "compile_commands.json",
+  "composer.json",
+  "pom.xml",
+  "build.gradle",
+  "Gemfile",
+  "Rakefile",
+  "Makefile.PL",
+  "Build.PL",
+  "stack.yaml",
+  "mix.exs",
+  "pubspec.yaml",
+  "AndroidManifest.xml",
+  "*.sln",
+  "*.csproj",
+}
+
+local project_ext_files = {
+  lua = { "lua/**/*.lua", ".luarc.json", ".luacheckrc" },
+  python = { "**/*.py", "pyproject.toml", "requirements.txt" },
+  javascript = { "**/*.js", "package.json", "tsconfig.json" },
+  typescript = { "**/*.ts", "package.json", "tsconfig.json" },
+  rust = { "**/*.rs", "Cargo.toml" },
+  c = { "**/*.c", "Makefile", "CMakeLists.txt", "compile_commands.json" },
+  cpp = { "**/*.cpp", "Makefile", "CMakeLists.txt", "compile_commands.json" },
+  perl = { "**/*.pl", "**/*.pm", "Makefile.PL", "Build.PL" },
+  go = { "**/*.go", "go.mod", "go.work" },
+  css = { "**/*.css", "**/*.scss", "**/*.less" },
+  yaml = { "**/*.yml", "**/*.yaml" },
+}
+
+local function detect_root(markers, startpath)
+  local dir = vim.fs.dirname(startpath or vim.api.nvim_buf_get_name(0))
+  while dir do
+    for _, marker in ipairs(markers) do
+      if marker:find("*", 1, true) then
+        local pat = vim.fs.joinpath(dir, marker)
+        local found = vim.fn.glob(pat, false, true)
+        if #found > 0 then
+          return dir
+        end
+      else
+        local path = vim.fs.joinpath(dir, marker)
+        if vim.fn.filereadable(path) == 1 or vim.fn.isdirectory(path) == 1 then
+          return dir
+        end
+      end
+    end
+    local parent = vim.fs.dirname(dir)
+    if parent == dir then
+      break
+    end
+    dir = parent
+  end
+  return vim.loop.cwd()
+end
+
+local function collect_ext_files(fts, root)
+  local all = {}
+  for _, ft in ipairs(fts) do
+    local pats = project_ext_files[ft]
+    if pats then
+      for _, pat in ipairs(pats) do
+        local globbed = vim.fn.glob(vim.fs.joinpath(root, pat), false, true)
+        vim.list_extend(all, globbed)
+      end
+    end
+  end
+  return all
+end
+
 local function start_server(cmd, filetypes, settings)
   if vim.fn.executable(cmd[1]) == 1 then
     vim.api.nvim_create_autocmd("FileType", {
       pattern = filetypes,
-      ---@diagnostic disable-next-line: unused-local
       callback = function(args)
+        local bufnr = args.buf
+        local startfile = vim.api.nvim_buf_get_name(bufnr)
+        local root = detect_root(root_markers, startfile)
+        local ext_files = collect_ext_files(filetypes, root)
+        local merged = vim.tbl_deep_extend(
+          "force",
+          settings or {},
+          { project_ext_files = ext_files }
+        )
         vim.lsp.start({
           name = cmd[1],
           cmd = cmd,
-          root_dir = vim.fs.dirname(
-            vim.fs.find(
-              { "init.lua", "package.json", ".git", ".luarc.json", ".root" },
-              { upward = true }
-            )[1]
-          ),
+          root_dir = root,
           on_attach = on_attach,
           capabilities = capabilities,
           flags = { debounce_text_changes = 50, exit_timeout = 500 },
-          settings = settings,
+          settings = merged,
         })
       end,
     })
@@ -114,12 +209,12 @@ start_server({ "clangd" }, { "c", "cpp", "objc", "objcpp" }, {
 -- start_server({ "yaml-language-server", "--stdio" }, { "yaml" }, {
 --  yaml = {
 --   schemas = { kubernetes = "/*.k8s.yaml" },
----   completion = true,
----   hover = true,
+--   completion = true,
+--   hover = true,
 --   validate = true,
 --   format = { enable = false },
 -- },
---- })
+-- })
 
 start_server(
   { "typescript-language-server", "--stdio" },
@@ -191,78 +286,73 @@ start_server({ "pls" }, { "perl" }, {
   },
 })
 
-start_server({
-  "/data/data/com.termux/files/usr/bin/vscode-css-language-server",
-  "--stdio",
-}, { "css", "scss", "less" }, {
-  css = {
-    validate = true, -- Enable syntax and lint validation
-    lint = {
-      unknownAtRules = "warning", -- Warn about unknown @ rules
-      boxModel = "warning", -- Warn about box model issues
-      duplicateProperties = "warning",
-      emptyRules = "warning",
-      important = "warning",
-      shorthandProperties = "warning",
-      vendorPrefix = "warning",
-      zeroUnits = "warning",
+start_server(
+  { "vscode-css-language-server", "--stdio" },
+  { "css", "scss", "less" },
+  {
+    css = {
+      validate = true,
+      lint = {
+        unknownAtRules = "warning",
+        boxModel = "warning",
+        duplicateProperties = "warning",
+        emptyRules = "warning",
+        important = "warning",
+        shorthandProperties = "warning",
+        vendorPrefix = "warning",
+        zeroUnits = "warning",
+      },
+      completion = {
+        completePropertyWithSemicolon = true,
+        triggerPropertyValueCompletion = true,
+      },
+      hover = true,
+      colorProvider = true,
+      format = { enable = true },
     },
-    completion = {
-      completePropertyWithSemicolon = true,
-      triggerPropertyValueCompletion = true,
+    scss = {
+      validate = true,
+      lint = {
+        unknownAtRules = "warning",
+        boxModel = "warning",
+        duplicateProperties = "warning",
+        emptyRules = "warning",
+        important = "warning",
+        shorthandProperties = "warning",
+        vendorPrefix = "warning",
+        zeroUnits = "warning",
+      },
+      completion = {
+        completePropertyWithSemicolon = true,
+        triggerPropertyValueCompletion = true,
+      },
+      hover = true,
+      colorProvider = true,
+      format = { enable = true },
     },
-    hover = true, -- Enable hover documentation
-    colorProvider = true, -- Enable color highlighting
-    format = {
-      enable = true, -- Enable formatting
+    less = {
+      validate = true,
+      lint = {
+        unknownAtRules = "warning",
+        boxModel = "warning",
+        duplicateProperties = "warning",
+        emptyRules = "warning",
+        important = "warning",
+        shorthandProperties = "warning",
+        vendorPrefix = "warning",
+        zeroUnits = "warning",
+      },
+      completion = {
+        completePropertyWithSemicolon = true,
+        triggerPropertyValueCompletion = true,
+      },
+      hover = true,
+      colorProvider = true,
+      format = { enable = true },
     },
-    -- You can add custom data paths or css modules if needed:
-    -- customData = { "/path/to/your/custom-data.json" },
-    -- cssModules = { enable = true },
-  },
-  scss = {
-    validate = true,
-    lint = {
-      unknownAtRules = "warning",
-      boxModel = "warning",
-      duplicateProperties = "warning",
-      emptyRules = "warning",
-      important = "warning",
-      shorthandProperties = "warning",
-      vendorPrefix = "warning",
-      zeroUnits = "warning",
-    },
-    completion = {
-      completePropertyWithSemicolon = true,
-      triggerPropertyValueCompletion = true,
-    },
-    hover = true,
-    colorProvider = true,
-    format = { enable = true },
-  },
-  less = {
-    validate = true,
-    lint = {
-      unknownAtRules = "warning",
-      boxModel = "warning",
-      duplicateProperties = "warning",
-      emptyRules = "warning",
-      important = "warning",
-      shorthandProperties = "warning",
-      vendorPrefix = "warning",
-      zeroUnits = "warning",
-    },
-    completion = {
-      completePropertyWithSemicolon = true,
-      triggerPropertyValueCompletion = true,
-    },
-    hover = true,
-    colorProvider = true,
-    format = { enable = true },
-  },
-})
+  }
+)
 
--- Enable inlay hints + semantic tokens if available (Neovim 0.11+ safe)
 vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(args)
     local client = vim.lsp.get_client_by_id(args.data.client_id)
@@ -272,19 +362,15 @@ vim.api.nvim_create_autocmd("LspAttach", {
       return
     end
 
-    --  Inlay hints (new API)
     if client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
       vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
     end
 
-    --  Semantic tokens
     if
       client.server_capabilities.semanticTokensProvider
       and vim.lsp.semantic_tokens
     then
       vim.lsp.semantic_tokens.start(bufnr, client.id)
-
-      -- light refresh on insert leave
       local group =
         vim.api.nvim_create_augroup("LspSemanticRefresh", { clear = false })
       vim.api.nvim_create_autocmd("InsertLeave", {
@@ -298,20 +384,19 @@ vim.api.nvim_create_autocmd("LspAttach", {
   end,
 })
 
--- Expected LSP servers (system-installed)
 local expected_lsps = {
   lua_ls = "lua-language-server",
   clangd = "clangd",
-  ccls = "ccls",
+  python = "pyright",
   yamlls = "yaml-language-server",
   ts_ls = "typescript-language-server",
+  cssls = "vscode-css-language-server",
+  perlls = "pls",
 }
 
--- Native LSP info command with system check
 vim.api.nvim_create_user_command("NativeLspInfo", function()
   local bufnr = vim.api.nvim_get_current_buf()
 
-  -- Check for missing binaries
   local missing = {}
   for lsp, bin in pairs(expected_lsps) do
     if vim.fn.executable(bin) == 0 then
@@ -322,7 +407,6 @@ vim.api.nvim_create_user_command("NativeLspInfo", function()
     print("Warning: Missing LSP binaries: " .. table.concat(missing, ", "))
   end
 
-  -- Get active clients
   local clients = vim.lsp.get_clients({ bufnr = bufnr })
   if vim.tbl_isempty(clients) then
     print("No active LSP clients attached to this buffer")
@@ -360,15 +444,14 @@ vim.api.nvim_create_user_command("NativeLspInfo", function()
       table.insert(cap_list, "completion")
     end
 
-    print("      Capabilities: " .. table.concat(cap_list, ", "))
+    print("Capabilities: " .. table.concat(cap_list, ", "))
   end
 end, { desc = "Show info for native LSP clients (checks system binaries)" })
 
--- Quick LSP restart command
 vim.api.nvim_create_user_command("LspRestart", function()
   for _, client in pairs(vim.lsp.get_clients()) do
     client:stop()
   end
-  vim.cmd("edit") -- re-triggers FileType autocmd to restart
+  vim.cmd("edit")
   print("LSP clients restarted")
 end, { desc = "Restart all active LSP clients" })
