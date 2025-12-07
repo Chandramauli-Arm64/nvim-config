@@ -14,3 +14,8 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     vim.fn.winrestview(save)
   end,
 })
+
+vim.api.nvim_create_user_command("Lazygit", function()
+  vim.fn.termopen("lazygit")
+  vim.cmd("startinsert")
+end, { desc = "Lazygit in floating terminal" })
