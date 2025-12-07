@@ -59,22 +59,37 @@ return {
       builtin.find_files,
       { desc = "Find Files" }
     )
-    vim.keymap.set("n", "bb", builtin.buffers, { desc = "Find Buffers" })
-    vim.keymap.set("n", "gg", builtin.git_files, { desc = "Find Git Files" })
-    vim.keymap.set("n", "lg", builtin.live_grep, { desc = "Live Grep" })
-    vim.keymap.set("n", "ht", builtin.help_tags, { desc = "Help Tags" })
-    vim.keymap.set("n", "ss", function()
+    vim.keymap.set(
+      "n",
+      "<leader>bb",
+      builtin.buffers,
+      { desc = "Find Buffers" }
+    )
+    vim.keymap.set(
+      "n",
+      "<leader>gg",
+      builtin.git_files,
+      { desc = "Find Git Files" }
+    )
+    vim.keymap.set("n", "<leader>Lg", builtin.live_grep, { desc = "Live Grep" })
+    vim.keymap.set("n", "<leader>ht", builtin.help_tags, { desc = "Help Tags" })
+    vim.keymap.set("n", "<leader>ss", function()
       builtin.lsp_document_symbols({
         symbols = { "Class", "Function", "Method", "Constructor" },
       })
     end, { desc = "LSP Symbols" })
     vim.keymap.set(
       "n",
-      "sd",
+      "<leader>sd",
       builtin.diagnostics,
       { desc = "Search Diagnostics" }
     )
-    vim.keymap.set("n", "rr", builtin.resume, { desc = "Resume Last Search" })
+    vim.keymap.set(
+      "n",
+      "<leader>rr",
+      builtin.resume,
+      { desc = "Resume Last Search" }
+    )
   end,
 
   init = function()
@@ -92,28 +107,28 @@ return {
         desc = "Find Files",
       },
       {
-        "bb",
+        "<leader>bb",
         function()
           require("telescope.builtin").buffers()
         end,
         desc = "Find Buffers",
       },
       {
-        "gg",
+        "<leader>gg",
         function()
           require("telescope.builtin").git_files()
         end,
         desc = "Find Git Files",
       },
       {
-        "lg",
+        "<leader>Lg",
         function()
           require("telescope.builtin").live_grep()
         end,
         desc = "Live Grep",
       },
       {
-        "ht",
+        "<leader>ht",
         function()
           require("telescope.builtin").help_tags()
         end,
@@ -123,7 +138,7 @@ return {
       -- LSP-specific searches
       { "s", group = "Search (LSP)", mode = "n" },
       {
-        "ss",
+        "<leader>ss",
         function()
           require("telescope.builtin").lsp_document_symbols({
             symbols = { "Class", "Function", "Method", "Constructor" },
@@ -132,7 +147,7 @@ return {
         desc = "LSP Symbols",
       },
       {
-        "sd",
+        "<leader>sd",
         function()
           require("telescope.builtin").diagnostics()
         end,
@@ -141,7 +156,7 @@ return {
 
       -- Resume last search
       {
-        "rr",
+        "<leader>rr",
         function()
           require("telescope.builtin").resume()
         end,
