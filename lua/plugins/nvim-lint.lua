@@ -17,6 +17,7 @@ return {
       perl = { "perlcritic" },
       c = { "clangtidy" },
       cpp = { "clangtidy" },
+      bash = { "shellcheck " },
       -- Add additional mappings as needed
     }
 

@@ -42,6 +42,7 @@ return {
       c = { "clang-format" },
       perl = { "perltidy" },
       sql = { "sql-formatter" },
+      bash = { "shfmt" },
     },
 
     -- Unified formatting options
