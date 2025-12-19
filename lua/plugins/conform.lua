@@ -43,6 +43,8 @@ return {
       perl = { "perltidy" },
       sql = { "sql-formatter" },
       bash = { "shfmt" },
+      sh = { "shfmt" },
+      zsh = { "shfmt" },
     },
 
     -- Unified formatting options
@@ -75,6 +77,9 @@ return {
         command = "sql-formatter",
         args = { "--language", "mysql" },
         stdin = true,
+      },
+      shfmt = {
+        prepend_args = { "-i", "0" },
       },
     },
 
