@@ -73,21 +73,58 @@
 return {
   cmd = { "lua-language-server" },
   filetypes = { "lua" },
+
   root_markers = {
-    ".emmyrc.json",
     ".luarc.json",
     ".luarc.jsonc",
-    ".luacheckrc",
+    ".emmyrc.json",
     ".stylua.toml",
     "stylua.toml",
     "selene.toml",
-    "selene.yml",
     ".git",
   },
+
   settings = {
     Lua = {
-      codeLens = { enable = true },
-      hint = { enable = true, semicolon = "Disable" },
+      runtime = {
+        version = "LuaJIT",
+        path = vim.split(package.path, ";"),
+      },
+
+      diagnostics = {
+        globals = { "vim" },
+      },
+
+      workspace = {
+        library = vim.api.nvim_get_runtime_file("", true),
+        checkThirdParty = false,
+      },
+
+      completion = {
+        callSnippet = "Replace",
+        keywordSnippet = "Replace",
+      },
+
+      hint = {
+        enable = true,
+        arrayIndex = "Enable",
+        setType = true,
+        paramType = true,
+        paramName = "All",
+        semicolon = "Disable",
+      },
+
+      codeLens = {
+        enable = true,
+      },
+
+      format = {
+        enable = false,
+      },
+
+      telemetry = {
+        enable = false,
+      },
     },
   },
 }

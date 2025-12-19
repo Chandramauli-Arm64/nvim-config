@@ -129,6 +129,69 @@ return {
       vim.cmd("botright copen")
     end,
   },
+
+  settings = {
+    typescript = {
+      inlayHints = {
+        includeInlayParameterNameHints = "all",
+        includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+        includeInlayFunctionParameterTypeHints = true,
+        includeInlayVariableTypeHints = true,
+        includeInlayPropertyDeclarationTypeHints = true,
+        includeInlayFunctionLikeReturnTypeHints = true,
+        includeInlayEnumMemberValueHints = true,
+      },
+
+      suggest = {
+        completeFunctionCalls = true,
+        completePropertyImports = true,
+        autoImports = true,
+      },
+
+      format = {
+        enable = false, -- keep if using prettier/eslint
+      },
+
+      implementationsCodeLens = {
+        enabled = true,
+      },
+
+      referencesCodeLens = {
+        enabled = true,
+      },
+    },
+
+    javascript = {
+      inlayHints = {
+        includeInlayParameterNameHints = "all",
+        includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+        includeInlayFunctionParameterTypeHints = true,
+        includeInlayVariableTypeHints = true,
+        includeInlayPropertyDeclarationTypeHints = true,
+        includeInlayFunctionLikeReturnTypeHints = true,
+        includeInlayEnumMemberValueHints = true,
+      },
+
+      suggest = {
+        completeFunctionCalls = true,
+        completePropertyImports = true,
+        autoImports = true,
+      },
+
+      format = {
+        enable = false,
+      },
+
+      implementationsCodeLens = {
+        enabled = true,
+      },
+
+      referencesCodeLens = {
+        enabled = true,
+      },
+    },
+  },
+
   on_attach = function(client, bufnr)
     -- ts_ls provides `source.*` code actions that apply to the whole file. These only appear in
     -- `vim.lsp.buf.code_action()` if specified in `context.only`.
