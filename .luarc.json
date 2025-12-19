@@ -1,8 +1,46 @@
 {
-  "runtime.version": "LuaJIT",
-  "diagnostics.globals": [
-    "vim",
-    "sql"
-  ],
-  "workspace.checkThirdParty": false
+  "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
+  "runtime": {
+    "version": "LuaJIT",
+    "path": [
+      "?.lua",
+      "?/init.lua"
+    ]
+  },
+  "diagnostics": {
+    "globals": [
+      "vim"
+    ],
+    "disable": [
+      "lowercase-global"
+    ]
+  },
+  "workspace": {
+    "library": [
+      "$VIMRUNTIME",
+      "${3rd}/luv/library"
+    ],
+    "checkThirdParty": false
+  },
+  "completion": {
+    "callSnippet": "Replace",
+    "keywordSnippet": "Replace"
+  },
+  "hint": {
+    "enable": true,
+    "arrayIndex": "Enable",
+    "setType": true,
+    "paramType": true,
+    "paramName": "All",
+    "semicolon": "Disable"
+  },
+  "codeLens": {
+    "enable": true
+  },
+  "format": {
+    "enable": false
+  },
+  "telemetry": {
+    "enable": false
+  }
 }
