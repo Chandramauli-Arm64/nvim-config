@@ -17,13 +17,13 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 
 -- Lazygit
 vim.api.nvim_create_user_command("Lazygit", function()
-  vim.fn.termopen("lazygit")
+  vim.fn.jobstart("Lazygit", { term = true })
   vim.cmd("startinsert")
 end, { desc = "Lazygit in floating terminal" })
 
 -- lldb (debugger)
 vim.api.nvim_create_user_command("Lldb", function()
-  vim.fn.termopen("lldb")
+  vim.fn.jobstart("lldb", { term = true })
   vim.cmd("startinsert")
 end, { desc = "LLDB in floating terminal" })
 
@@ -142,7 +142,7 @@ vim.api.nvim_create_autocmd("BufLeave", {
 
       -- Finally delete safely (no force)
       if vim.api.nvim_buf_is_valid(buf) then
-        pcall(vim.cmd, "bdelete " .. buf)
+        pcall(vim.api.nvim_buf_delete, buf, { force = false })
       end
     end)
   end,
