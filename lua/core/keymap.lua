@@ -6,7 +6,6 @@ map("n", "<leader>h", ":nohlsearch<CR>", opts)
 map("n", "j", "gj", opts)
 map("n", "k", "gk", opts)
 map("n", "<leader>e", "<cmd>NvimTreeToggle<CR>", opts)
-map("n", "<leader>Lg", "<cmd>Lazygit<CR>", opts)
 
 wk.add({
   {
@@ -23,13 +22,6 @@ wk.add({
     "<leader>e",
     "<cmd>NvimTreeToggle<CR>",
     desc = "Toggle file explorer",
-    mode = "n",
-  },
-  -- Lazygit
-  {
-    "<leader>lg",
-    "<cmd>Lazygit<CR>",
-    desc = "Open Lazygit in floating terminal",
     mode = "n",
   },
 })

@@ -53,7 +53,7 @@ end
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 local ok_cmp, cmp_lsp = pcall(require, "cmp_nvim_lsp")
-if ok_cmp and cmp_lsp then
+if ok_cmp then
   capabilities = cmp_lsp.default_capabilities(capabilities)
 end
 M.capabilities = capabilities
@@ -62,6 +62,27 @@ M.capabilities = capabilities
 
 M._registry = {}
 
+-- Helper: Build root_dir function if only root_markers exists
+local function build_root_dir_from_markers(markers)
+  return function(fname)
+    if not markers or not vim.islist(markers) then
+      return vim.fn.fnamemodify(fname, ":p:h")
+    end
+    return vim.fs.root(fname, markers) or vim.fn.fnamemodify(fname, ":p:h")
+  end
+end
+
+-- Infer the root directory logic for each server config:
+local function inject_root_dir(server)
+  if server.root_dir then
+    return server
+  end
+  if server.root_markers then
+    server.root_dir = build_root_dir_from_markers(server.root_markers)
+  end
+  return server
+end
+
 -- Register server: minimal, clean, fast
 
 local function register_server_table(name, server)
@@ -69,22 +90,20 @@ local function register_server_table(name, server)
     return
   end
 
+  inject_root_dir(server)
+
   vim.api.nvim_create_autocmd("FileType", {
     pattern = server.filetypes,
     callback = function(args)
       local bufnr = args.buf
       local fname = vim.api.nvim_buf_get_name(bufnr)
-
-      -- lspconfig style: root_dir is handled by the server file itself
       local root_dir = nil
-      if type(server.root_dir) == "function" then
-        pcall(function()
-          root_dir = server.root_dir(fname)
-        end)
-      end
 
-      -- fallback to cwd if needed
-      root_dir = root_dir or vim.loop.cwd()
+      if type(server.root_dir) == "function" then
+        local ok, ret = pcall(server.root_dir, fname)
+        root_dir = (ok and ret) or nil
+      end
+      root_dir = root_dir or vim.fn.fnamemodify(fname, ":p:h")
 
       local key = name .. "::" .. root_dir
       if M._registry[key] then
@@ -98,29 +117,43 @@ local function register_server_table(name, server)
           end
         or M.on_attach
 
+      -- Merge completion capabilities but avoid deep merge unless needed
+      local final_capabilities = server.capabilities
+          and vim.tbl_deep_extend(
+            "force",
+            vim.deepcopy(M.capabilities),
+            server.capabilities
+          )
+        or vim.deepcopy(M.capabilities)
+
       local opts = {
         name = name,
         cmd = server.cmd,
         filetypes = server.filetypes,
         root_dir = root_dir,
         on_attach = on_attach,
-        capabilities = vim.tbl_deep_extend(
-          "force",
-          M.capabilities,
-          server.capabilities or {}
-        ),
+        capabilities = final_capabilities,
         settings = server.settings,
         handlers = server.handlers,
         flags = server.flags
           or { debounce_text_changes = 50, exit_timeout = 500 },
+        init_options = server.init_options,
+        on_init = server.on_init,
+        commands = server.commands,
       }
 
-      -- ensure binary exists
       if
         type(opts.cmd) == "table"
         and opts.cmd[1]
         and vim.fn.executable(opts.cmd[1]) == 0
       then
+        vim.notify(
+          ("[LSP] Skipping '%s': Binary '%s' not executable (missing or wrong path)."):format(
+            name,
+            opts.cmd[1]
+          ),
+          vim.log.levels.WARN
+        )
         return
       end
 
@@ -134,22 +167,7 @@ end
 
 M.register_server_table = register_server_table
 
--- Old compatibility wrapper
-
-function M.start_server(cmd, filetypes, settings)
-  if type(cmd) == "table" and (cmd.cmd or cmd.filetypes) and not filetypes then
-    return register_server_table(cmd.name or cmd.cmd[1], cmd)
-  end
-
-  register_server_table(cmd[1], {
-    cmd = cmd,
-    filetypes = filetypes,
-    settings = settings,
-  })
-end
-
 -- Auto-load server files: lua/lsp/servers/*.lua
-
 function M.setup_servers()
   local dir = vim.fn.stdpath("config") .. "/lua/lsp/servers"
   local ok = pcall(vim.loop.fs_stat, dir)
@@ -167,38 +185,11 @@ function M.setup_servers()
   end
 end
 
--- LspAttach: inlay hints + semantic tokens
-
-vim.api.nvim_create_autocmd("LspAttach", {
-  callback = function(args)
-    local client = vim.lsp.get_client_by_id(args.data.client_id)
-    local bufnr = args.buf
-    if not client then
-      return
-    end
-
-    if client.server_capabilities.inlayHintProvider then
-      pcall(vim.lsp.inlay_hint, bufnr, true)
-    end
-
-    if client.server_capabilities.semanticTokensProvider then
-      pcall(vim.lsp.semantic_tokens.start, bufnr, client.id)
-      vim.api.nvim_create_autocmd("InsertLeave", {
-        buffer = bufnr,
-        callback = function()
-          pcall(vim.lsp.semantic_tokens.force_refresh)
-        end,
-      })
-    end
-  end,
-})
-
 -- Commands
-
 local expected_lsps = {
   lua_ls = "lua-language-server",
   clangd = "clangd",
-  python = "pyright",
+  python = "basedpyright", -- update to "basedpyright-langserver" if you use basedpyright only
   yamlls = "yaml-language-server",
   ts_ls = "typescript-language-server",
   cssls = "vscode-css-language-server",
@@ -228,7 +219,7 @@ vim.api.nvim_create_user_command("NativeLspInfo", function()
   for _, client in ipairs(clients) do
     print("  - " .. client.name)
     if client.config.root_dir then
-      print("Root: " .. client.config.root_dir)
+      print("Root: " .. tostring(client.config.root_dir))
     end
   end
 end, {})
