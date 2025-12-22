@@ -1,7 +1,9 @@
 return {
   "hrsh7th/nvim-cmp",
-  event = { "LspAttach" },
-  ft = { "lua", "python", "javascript", "typescript", "vue", "css", "html" },
+
+  -- Load when entering insert mode or reading a buffer
+  event = { "InsertEnter", "BufReadPost", "BufNewFile" },
+
   dependencies = {
     -- Core completion sources
     "hrsh7th/cmp-nvim-lsp",
@@ -9,7 +11,7 @@ return {
     "hrsh7th/cmp-path",
     "hrsh7th/cmp-nvim-lsp-signature-help",
 
-    -- Snippet engine & extras
+    -- Snippet engine
     {
       "L3MON4D3/LuaSnip",
       build = (function()
@@ -21,10 +23,12 @@ return {
       dependencies = {
         "rafamadriz/friendly-snippets",
         config = function()
-          require("luasnip.loaders.from_vscode").lazy_load({ paths = {} })
+          require("luasnip.loaders.from_vscode").lazy_load()
         end,
       },
     },
+
+    -- cmp snippet source
     "saadparwaiz1/cmp_luasnip",
   },
 
@@ -33,9 +37,10 @@ return {
     local luasnip = require("luasnip")
     local wk = require("which-key")
 
+    -- setup snippet
     luasnip.config.setup({})
 
-    -- Nerd Font icons
+    -- icons
     local kind_icons = {
       Text = "󰉿",
       Method = "󰆧",
@@ -75,12 +80,12 @@ return {
         completeopt = "menu,menuone,noinsert",
         autocomplete = { cmp.TriggerEvent.TextChanged },
         keyword_length = 1,
-        max_item_count = 8, -- compact list for mobile
+        max_item_count = 8,
       },
 
       performance = {
-        debounce = 60, -- ms to wait after input before triggering completion
-        throttle = 30, -- ms to wait before updating completion menu
+        debounce = 60,
+        throttle = 30,
         fetching_timeout = 500,
         confirm_resolve_timeout = 80,
         async_budget = 1,
@@ -90,12 +95,9 @@ return {
       window = {
         completion = cmp.config.window.bordered({
           border = "rounded",
-          winhighlight = "Normal:Normal,FloatBorder:CmpBorder,CursorLine:PmenuSel,Search:None",
-          scrollbar = false,
         }),
         documentation = cmp.config.window.bordered({
           border = "rounded",
-          winhighlight = "Normal:Normal,FloatBorder:CmpDocBorder,CursorLine:PmenuSel,Search:None",
         }),
       },
 
@@ -120,14 +122,7 @@ return {
           end
         end, { "i", "s" }),
 
-        ["<CR>"] = cmp.mapping(function(fallback)
-          if cmp.visible() and cmp.get_selected_entry() then
-            cmp.confirm({ select = false })
-          else
-            fallback()
-          end
-        end, { "i", "s" }),
-
+        ["<CR>"] = cmp.mapping.confirm({ select = false }),
         ["<C-Space>"] = cmp.mapping.complete(),
         ["<C-b>"] = cmp.mapping.scroll_docs(-4),
         ["<C-f>"] = cmp.mapping.scroll_docs(4),
@@ -162,32 +157,24 @@ return {
       },
     })
 
-    -- subtle ghost text style
     vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
 
-    -- Toggle cmp easily (for mobile typing)
+    -- toggle cmp
     vim.keymap.set("n", "<leader>ut", function()
-      local cmp_enabled = cmp.get_config().enabled ~= false
-      cmp.setup({ enabled = not cmp_enabled })
-      print("Cmp " .. (cmp_enabled and "OFF" or "ON"))
+      local enabled = cmp.get_config().enabled ~= false
+      cmp.setup({ enabled = not enabled })
+      print("Cmp " .. (enabled and "OFF" or "ON"))
     end, { desc = "Toggle cmp" })
 
-    -- Register with which-key
+    -- which-key registration
     wk.add({
-      -- Insert/Select mode keymaps
-      { "<Tab>", "Next completion item / expand snippet", mode = { "i", "s" } },
-      {
-        "<S-Tab>",
-        "Previous completion item / jump snippet",
-        mode = { "i", "s" },
-      },
-      { "<C-Space>", "Trigger completion menu", mode = "i" },
+      { "<Tab>", "Next completion / expand snippet", mode = { "i", "s" } },
+      { "<S-Tab>", "Prev completion / jump snippet", mode = { "i", "s" } },
+      { "<C-Space>", "Trigger completion", mode = "i" },
       { "<C-b>", "Scroll docs up", mode = "i" },
       { "<C-f>", "Scroll docs down", mode = "i" },
-
-      -- Normal mode utility
       { "<leader>u", group = "utility" },
-      { "<leader>ut", desc = "Toggle cmp (completion engine)", mode = "n" },
+      { "<leader>ut", desc = "Toggle cmp", mode = "n" },
     })
   end,
 }

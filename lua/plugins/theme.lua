@@ -69,6 +69,7 @@ return {
         -- Visual = { fg = "base", bg = "text", inherit = false },
       },
 
+      ---@diagnostic disable-next-line: unused-local
       before_highlight = function(group, highlight, palette)
         -- Disable all undercurls
         -- if highlight.undercurl then

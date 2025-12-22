@@ -71,7 +71,7 @@ return {
       builtin.git_files,
       { desc = "Find Git Files" }
     )
-    vim.keymap.set("n", "<leader>Lg", builtin.live_grep, { desc = "Live Grep" })
+    vim.keymap.set("n", "<leader>lg", builtin.live_grep, { desc = "Live Grep" })
     vim.keymap.set("n", "<leader>ht", builtin.help_tags, { desc = "Help Tags" })
     vim.keymap.set("n", "<leader>ss", function()
       builtin.lsp_document_symbols({
@@ -121,7 +121,7 @@ return {
         desc = "Find Git Files",
       },
       {
-        "<leader>Lg",
+        "<leader>lg",
         function()
           require("telescope.builtin").live_grep()
         end,

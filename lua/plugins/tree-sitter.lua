@@ -3,7 +3,9 @@ return {
   "nvim-treesitter/nvim-treesitter",
   build = ":TSUpdate",
   branch = "master",
-  lazy = false,
+  event = { "BufReadPost", "BufNewFile" },
+  cmd = { "TSUpdate", "TSInstall", "TSLog", "TSUninstall" },
+
   config = function()
     require("nvim-treesitter.configs").setup({
       -- Languages to install
