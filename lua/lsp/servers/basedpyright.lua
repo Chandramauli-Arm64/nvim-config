@@ -15,6 +15,7 @@ local function set_python_path(command)
       ---@diagnostic disable-next-line: param-type-mismatch
       client.settings.python = vim.tbl_deep_extend(
         "force",
+        ---@diagnostic disable-next-line: param-type-mismatch
         client.settings.python or {},
         { pythonPath = path }
       )
