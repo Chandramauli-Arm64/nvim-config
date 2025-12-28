@@ -2,7 +2,7 @@ return {
   "hrsh7th/nvim-cmp",
 
   -- Load when entering insert mode or reading a buffer
-  event = { "InsertEnter", "BufReadPost", "BufNewFile" },
+  event = { "LspAttach" },
 
   dependencies = {
     -- Core completion sources
@@ -38,7 +38,11 @@ return {
     local wk = require("which-key")
 
     -- setup snippet
-    luasnip.config.setup({})
+    luasnip.config.setup({
+      history = true,
+      updateevents = "TextChanged",
+      "TextChangedI",
+    })
 
     -- icons
     local kind_icons = {
@@ -70,6 +74,23 @@ return {
     }
 
     cmp.setup({
+      enabled = function()
+        local buftype = vim.bo.buftype
+        if buftype == "prompt" then
+          return false
+        end
+
+        local ft = vim.bo.filetype
+        local blacklist = {
+          markdown = true,
+          gitcommit = true,
+          text = true,
+          help = true,
+        }
+
+        return not blacklist[ft]
+      end,
+
       snippet = {
         expand = function(args)
           luasnip.lsp_expand(args.body)
