@@ -44,7 +44,7 @@ return {
       sql = { "sql-formatter" },
       bash = { "shfmt" },
       sh = { "shfmt" },
-      zsh = { "shfmt" },
+      d = { "dfmt" },
     },
 
     -- Unified formatting options
@@ -80,6 +80,11 @@ return {
       },
       shfmt = {
         prepend_args = { "-i", "0" },
+      },
+      dfmt = {
+        command = "dfmt",
+        args = { "--inplace" },
+        stdin = false,
       },
     },
 

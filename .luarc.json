@@ -9,7 +9,8 @@
   },
   "diagnostics": {
     "globals": [
-      "vim"
+      "vim",
+            "json"
     ],
     "disable": [
       "lowercase-global"

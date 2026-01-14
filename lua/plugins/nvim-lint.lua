@@ -18,6 +18,8 @@ return {
       c = { "clangtidy" },
       cpp = { "clangtidy" },
       bash = { "shellcheck " },
+      d = { "dscanner" },
+      zsh = { "zshellcheck" },
       -- Add additional mappings as needed
     }
 
@@ -26,7 +28,21 @@ return {
     lint.linters.eslint_d.args = { "--format", "json" }
     lint.linters.flake8 = lint.linters.flake8 or {}
     lint.linters.flake8.args = { "--format=default" }
-    -- Example within nvim-lint configuration
+    lint.linters.dscanner = {
+      cmd = "dscanner",
+      stdin = false,
+      args = {
+        "--styleCheck",
+        "--errorFormat",
+        "{filepath}:{line}:{column}: {type2}: {message}",
+      },
+      stream = "stdout",
+      ignore_exitcode = true,
+      parser = require("lint.parser").from_errorformat(
+        "%f:%l:%c: %t%*[^:]: %m",
+        { source = "dscanner" }
+      ),
+    }
     lint.linters.luacheck.args = { "--globals", "vim", "--" }
     lint.linters.clangtidy =
       vim.tbl_deep_extend("force", lint.linters.clangtidy or {}, {
@@ -38,6 +54,20 @@ return {
           "-std=c++17",
         },
       })
+    lint.linters.zshellcheck = {
+      name = "zshellcheck",
+      cmd = "zshellcheck",
+      args = { "-format", "json" },
+      stdin = false,
+      append_fname = true,
+      stream = "stdout",
+      ignore_exitcode = true,
+      ---@diagnostic disable-next-line: unused-local
+      parser = function(output, bufnr)
+        -- parsing logic here
+        return {}
+      end,
+    }
 
     -- Automatically lint on buffer write or when leaving insert mode
     vim.api.nvim_create_autocmd({ "BufWritePost", "InsertLeave" }, {
