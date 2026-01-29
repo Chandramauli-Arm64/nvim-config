@@ -1,0 +1,20 @@
+Review-Type: Self-Review
+Review-Status: Reviewed
+Reviewed-By: Chandramauli-Arm64
+Reviewed-On: 2026-01-29
+Tool: git-notes (manual)
+
+Summary:
+- Refactored lsp.lua for improved LSP initialization.
+- Reduced redundant handlers.
+- Improved readability and maintainability.
+
+Concerns:
+- Lsp attaching and detaching issues.
+
+Suggestions:
+- Considering to use the neovim docs lsp section for full reference and
+  use it for better lsp implementation in the future.
+
+Signature:
+Signed-off-by: Chandramauli-Arm64 <189079276+Chandramauli-Arm64@users.noreply.github.com>
