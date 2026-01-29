@@ -58,10 +58,6 @@ if ok_cmp then
 end
 M.capabilities = capabilities
 
--- Registry to prevent double-start
-
-M._registry = {}
-
 -- Helper: Build root_dir function if only root_markers exists
 local function build_root_dir_from_markers(markers)
   return function(fname)
@@ -92,10 +88,15 @@ local function register_server_table(name, server)
 
   inject_root_dir(server)
 
-  vim.api.nvim_create_autocmd("FileType", {
-    pattern = server.filetypes,
+  vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
     callback = function(args)
       local bufnr = args.buf
+      local ft = vim.bo[bufnr].filetype
+
+      if not vim.tbl_contains(server.filetypes, ft) then
+        return
+      end
+
       local fname = vim.api.nvim_buf_get_name(bufnr)
       local root_dir = nil
 
@@ -103,12 +104,8 @@ local function register_server_table(name, server)
         local ok, ret = pcall(server.root_dir, fname)
         root_dir = (ok and ret) or nil
       end
-      root_dir = root_dir or vim.fn.fnamemodify(fname, ":p:h")
 
-      local key = name .. "::" .. root_dir
-      if M._registry[key] then
-        return
-      end
+      root_dir = root_dir or vim.loop.cwd()
 
       local on_attach = server.on_attach
           and function(client, b)
@@ -117,7 +114,7 @@ local function register_server_table(name, server)
           end
         or M.on_attach
 
-      -- Merge completion capabilities but avoid deep merge unless needed
+      -- Merge completion capabilities (unchanged logic)
       local final_capabilities = server.capabilities
           and vim.tbl_deep_extend(
             "force",
@@ -148,7 +145,7 @@ local function register_server_table(name, server)
         and vim.fn.executable(opts.cmd[1]) == 0
       then
         vim.notify(
-          ("[LSP] Skipping '%s': Binary '%s' not executable (missing or wrong path)."):format(
+          ("[LSP] Skipping '%s': Binary '%s' not executable."):format(
             name,
             opts.cmd[1]
           ),
@@ -157,10 +154,7 @@ local function register_server_table(name, server)
         return
       end
 
-      local ok, client_id = pcall(vim.lsp.start, opts)
-      if ok and client_id then
-        M._registry[key] = client_id
-      end
+      vim.lsp.start(opts)
     end,
   })
 end
