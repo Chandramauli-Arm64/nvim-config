@@ -45,6 +45,9 @@ return {
       bash = { "shfmt" },
       sh = { "shfmt" },
       d = { "dfmt" },
+      v = { "vfmt" },
+      vsh = { "vfmt" },
+      vv = { "vfmt" },
     },
 
     -- Unified formatting options
@@ -85,6 +88,12 @@ return {
         command = "dfmt",
         args = { "--inplace" },
         stdin = false,
+      },
+      vfmt = {
+        command = "v",
+        args = { "fmt", "--enable-comment-directives", "$FILENAME" },
+        stdin = false,
+        timeout_ms = 10000,
       },
     },
 
