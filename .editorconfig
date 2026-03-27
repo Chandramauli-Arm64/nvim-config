@@ -14,7 +14,7 @@ indent_size = 2
 
 # Lua files (e.g., LuaRocks style)
 [*.lua]
-indent_style = space
+indent_style = tab
 indent_size = 3
 
 # Neovim config files specifically

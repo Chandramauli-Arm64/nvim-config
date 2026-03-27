@@ -12,9 +12,9 @@ opt.clipboard = "unnamedplus" -- Use system clipboard (if available)
 opt.completeopt = { "menuone", "noselect" }
 
 -- Indentation
-opt.expandtab = true -- Use spaces instead of tabs
-opt.shiftwidth = 2 -- Size of an indent
-opt.tabstop = 2 -- Number of spaces tabs count for
+-- opt.expandtab = true -- Use spaces instead of tabs
+-- opt.shiftwidth = 2 -- Size of an indent
+-- opt.tabstop = 2 -- Number of spaces tabs count for
 opt.smartindent = true -- Auto indent new lines
 
 -- UI
@@ -39,7 +39,7 @@ opt.timeoutlen = 500
 opt.swapfile = false
 opt.backup = false
 opt.undofile = true -- Persistent undo
-opt.autowrite = true -- Auto save before actions like :next or :make
+opt.autowrite = false
 
 -- Termux / Mobile Friendly
 g.loaded_python_provider = 0 -- Disable Python2 provider
@@ -59,3 +59,6 @@ vim.o.fileencoding = "utf-8"
 -- Cursor
 opt.cursorline = true
 opt.cursorcolumn = false
+
+-- boarder
+opt.winborder = "rounded"
