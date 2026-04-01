@@ -1,0 +1,1587 @@
+From f2613ec1d5dea04d9e21e89f9dd9e23ded6c9eed Mon Sep 17 00:00:00 2001
+From: Chandramauli-Arm64
+ <189079276+Chandramauli-Arm64@users.noreply.github.com>
+Date: Fri, 27 Mar 2026 13:57:12 +0530
+Subject: [PATCH] Intial commit fot test branch
+
+A simple and minimal test config.
+
+Signed-off-by: Chandramauli-Arm64
+<189079276+Chandramauli-Arm64@users.noreply.github.com>
+---
+ .editorconfig                  |   2 +-
+ after/syntax/c3.vim            |  58 +++++++
+ init.lua                       |   6 +-
+ lazy-lock.json                 |  22 +--
+ lua/core/autocmds.lua          | 139 +++-------------
+ lua/core/colour.lua            |  79 ----------
+ lua/core/filetype.lua          |   5 +
+ lua/core/indent-guide.lua      |  63 ++++++++
+ lua/core/keymap.lua            |  14 +-
+ lua/core/lsp.lua               | 280 ++++++++++++---------------------
+ lua/core/options.lua           |  11 +-
+ lua/core/statusline.lua        | 150 ++++++++++++++++++
+ lua/lsp/servers/serve_d.lua    |  13 ++
+ lua/plugins/autocompletion.lua | 201 -----------------------
+ lua/plugins/indentation.lua    |  35 -----
+ lua/plugins/lsp-progress.lua   |   7 -
+ lua/plugins/lualine.lua        | 105 -------------
+ lua/plugins/markdown.lua       |   7 +
+ lua/plugins/nvim-colorizer.lua |  18 ---
+ lua/plugins/nvim-tree.lua      |  11 --
+ lua/plugins/telescope.lua      |   4 +-
+ lua/plugins/tree-sitter.lua    |  80 ----------
+ 22 files changed, 446 insertions(+), 864 deletions(-)
+ create mode 100644 after/syntax/c3.vim
+ delete mode 100644 lua/core/colour.lua
+ create mode 100644 lua/core/filetype.lua
+ create mode 100644 lua/core/indent-guide.lua
+ create mode 100644 lua/core/statusline.lua
+ create mode 100644 lua/lsp/servers/serve_d.lua
+ delete mode 100644 lua/plugins/autocompletion.lua
+ delete mode 100644 lua/plugins/indentation.lua
+ delete mode 100644 lua/plugins/lsp-progress.lua
+ delete mode 100644 lua/plugins/lualine.lua
+ create mode 100644 lua/plugins/markdown.lua
+ delete mode 100644 lua/plugins/nvim-colorizer.lua
+ delete mode 100644 lua/plugins/nvim-tree.lua
+ delete mode 100644 lua/plugins/tree-sitter.lua
+
+diff --git a/.editorconfig b/.editorconfig
+index 75ab7d2..045f542 100644
+--- a/.editorconfig
++++ b/.editorconfig
+@@ -14,7 +14,7 @@ indent_size = 2
+ 
+ # Lua files (e.g., LuaRocks style)
+ [*.lua]
+-indent_style = space
++indent_style = tab
+ indent_size = 3
+ 
+ # Neovim config files specifically
+diff --git a/after/syntax/c3.vim b/after/syntax/c3.vim
+new file mode 100644
+index 0000000..b97077f
+--- /dev/null
++++ b/after/syntax/c3.vim
+@@ -0,0 +1,58 @@
++if exists("b:current_syntax")
++  finish
++endif
++
++syntax case match
++
++" Core language words
++syn keyword c3Keyword module import using alias as fn return if else elseif for while break continue switch case default defer try catch fault assert const var static pub private struct union enum typedef bitstruct sizeof typeof typeid true false null
++
++" Built-in/basic types from the official language docs
++syn keyword c3Type any bfloat bool char double fault float float16 float128 ichar int int128 iptr isz long short uint uint128 ulong uptr ushort usz void
++
++syn keyword c3StorageClass extern inline
++syn keyword c3Todo contained TODO FIXME XXX NOTE HACK
++
++" Function declarations: fn return_type name(...)
++syn match c3Function /\v\<fn\s+\zs[a-z_][A-Za-z0-9_]*\ze\s*\(/
++
++" PascalCase type names
++syn match c3TypeName /\v\<[A-Z][A-Za-z0-9_]*\>/
++
++" All-caps constants
++syn match c3Constant /\v\<[A-Z][A-Z0-9_]*\>/
++
++" Compile-time and builtin-style sigils
++syn match c3BuiltinSigil /\v[$@][A-Za-z_][A-Za-z0-9_]*\>/
++
++" Numbers
++syn match c3Number /\v%(^|[^[:alnum:]_])\zs(0[xX][0-9A-Fa-f_]+|0[bB][01_]+|\d[\d_]*(\.\d[\d_]*)?([eE][+-]?\d[\d_]*)?)([uUlLfF]{0,3})?/
++
++" Strings, raw strings, chars
++syn region c3String start=+"+ skip=+\\.+ end=+"+ contains=c3Escape
++syn region c3RawString start=+`+ end=+`+ contains=@Spell
++syn match c3Char /'\(\\.\|[^\\']\)'/
++syn match c3Escape /\\[abfnrtv\\'"?0-7xuU]/ contained
++
++" Comments
++syn match c3LineComment "//.*$"
++syn region c3BlockComment start="/\*" end="\*/" contains=c3Todo,c3LineComment
++
++" Links to standard highlight groups, so your theme does the coloring
++hi def link c3Keyword Keyword
++hi def link c3Type Type
++hi def link c3StorageClass StorageClass
++hi def link c3Function Function
++hi def link c3TypeName Type
++hi def link c3Constant Constant
++hi def link c3BuiltinSigil PreProc
++hi def link c3Number Number
++hi def link c3String String
++hi def link c3RawString String
++hi def link c3Char Character
++hi def link c3Escape SpecialChar
++hi def link c3LineComment Comment
++hi def link c3BlockComment Comment
++hi def link c3Todo Todo
++
++let b:current_syntax = "c3"
+diff --git a/init.lua b/init.lua
+index b4c3a83..95650df 100644
+--- a/init.lua
++++ b/init.lua
+@@ -1,7 +1,11 @@
+ -- Load core options
+ require("core.options")
+ require("core.lazy")
+-require("core.colour")
+ require("core.keymap")
+ require("core.autocmds")
+ require("core.lsp")
++vim.cmd.colorscheme("lunaperche")
++require("core.statusline")
++-- require("scope.init")
++require("core.indent-guide")
++require("core.filetype")
+diff --git a/lazy-lock.json b/lazy-lock.json
+index 718a63b..dc9063f 100644
+--- a/lazy-lock.json
++++ b/lazy-lock.json
+@@ -1,23 +1,9 @@
+ {
+-  "LuaSnip": { "branch": "master", "commit": "dae4f5aaa3574bd0c2b9dd20fb9542a02c10471c" },
+-  "bigfile.nvim": { "branch": "main", "commit": "33eb067e3d7029ac77e081cfe7c45361887a311a" },
+-  "cmp-buffer": { "branch": "main", "commit": "b74fab3656eea9de20a9b8116afa3cfc4ec09657" },
+-  "cmp-nvim-lsp": { "branch": "main", "commit": "cbc7b02bb99fae35cb42f514762b89b5126651ef" },
+-  "cmp-nvim-lsp-signature-help": { "branch": "main", "commit": "fd3e882e56956675c620898bf1ffcf4fcbe7ec84" },
+-  "cmp-path": { "branch": "main", "commit": "c642487086dbd9a93160e1679a1327be111cbc25" },
+-  "cmp_luasnip": { "branch": "master", "commit": "98d9cb5c2c38532bd9bdb481067b20fea8f32e90" },
+-  "conform.nvim": { "branch": "master", "commit": "c2526f1cde528a66e086ab1668e996d162c75f4f" },
+-  "friendly-snippets": { "branch": "main", "commit": "6cd7280adead7f586db6fccbd15d2cac7e2188b9" },
+-  "indent-blankline.nvim": { "branch": "master", "commit": "005b56001b2cb30bfa61b7986bc50657816ba4ba" },
++  "conform.nvim": { "branch": "master", "commit": "086a40dc7ed8242c03be9f47fbcee68699cc2395" },
+   "lazy.nvim": { "branch": "main", "commit": "306a05526ada86a7b30af95c5cc81ffba93fef97" },
+-  "lsp-progress.nvim": { "branch": "main", "commit": "ae52979ad412371ea6dc39ff70c8dfc681fb42b8" },
+-  "lualine.nvim": { "branch": "master", "commit": "47f91c416daef12db467145e16bed5bbfe00add8" },
+-  "nvim-cmp": { "branch": "main", "commit": "da88697d7f45d16852c6b2769dc52387d1ddc45f" },
+-  "nvim-colorizer.lua": { "branch": "master", "commit": "a065833f35a3a7cc3ef137ac88b5381da2ba302e" },
+-  "nvim-lint": { "branch": "master", "commit": "b3292aac30b935d4cccf0904053d1c7930df8a20" },
+-  "nvim-tree.lua": { "branch": "master", "commit": "a0db8bf7d6488b1dcd9cb5b0dfd6684a1e14f769" },
+-  "nvim-treesitter": { "branch": "master", "commit": "42fc28ba918343ebfd5565147a42a26580579482" },
+-  "nvim-web-devicons": { "branch": "master", "commit": "803353450c374192393f5387b6a0176d0972b848" },
++  "markdown-plus.nvim": { "branch": "main", "commit": "877dcc3ba70da93d87cd9565f85efbb01978399b" },
++  "nvim-lint": { "branch": "master", "commit": "606b823a57b027502a9ae00978ebf4f5d5158098" },
++  "nvim-web-devicons": { "branch": "master", "commit": "d7462543c9e366c0d196c7f67a945eaaf5d99414" },
+   "plenary.nvim": { "branch": "master", "commit": "b9fd5226c2f76c951fc8ed5923d85e4de065e509" },
+   "telescope-fzf-native.nvim": { "branch": "main", "commit": "6fea601bd2b694c6f2ae08a6c6fab14930c60e2c" },
+   "telescope-ui-select.nvim": { "branch": "master", "commit": "6e51d7da30bd139a6950adf2a47fda6df9fa06d2" },
+diff --git a/lua/core/autocmds.lua b/lua/core/autocmds.lua
+index b59de58..1027b19 100644
+--- a/lua/core/autocmds.lua
++++ b/lua/core/autocmds.lua
+@@ -15,123 +15,36 @@ vim.api.nvim_create_autocmd("BufWritePre", {
+   end,
+ })
+ 
+--- Lsp Restart command
+-vim.api.nvim_create_user_command("LspRestart", function()
+-  for _, client in ipairs(vim.lsp.get_clients()) do
+-    client:stop()
+-  end
+-  vim.cmd("edit")
+-  print("LSP restarted.")
+-end, {})
+-
+--- Auto-close buffers that are NOT modified when leaving them,
+--- but do NOT close when switching to help/checkhealth/tutor/docs/diagnostic-like buffers.
+-local transient_filetypes = {
+-  "help",
+-  "checkhealth",
+-  "man",
+-  "qf", -- quickfix / diagnostics lists
+-  "lspinfo",
+-  "fugitive",
+-  "git",
+-  "Trouble",
+-  "toggleterm",
+-  "NvimTree",
+-  "startify",
+-  "dashboard",
+-  "packer",
+-  "lazy",
+-  "nvim-tree",
+-}
+-
+-local function is_transient_buf(bufnr)
+-  if not bufnr or not vim.api.nvim_buf_is_valid(bufnr) then
+-    return false
+-  end
+-
+-  local bt = vim.bo[bufnr].buftype or ""
+-  if bt ~= "" then
+-    return true
+-  end
+-
+-  local ft = vim.bo[bufnr].filetype or ""
+-  for _, t in ipairs(transient_filetypes) do
+-    if ft == t then
+-      return true
+-    end
+-  end
+-
+-  -- Consider unlisted or non-modifiable buffers as transient as well
+-  if vim.fn.buflisted(bufnr) == 0 then
+-    return true
+-  end
+-  if vim.bo[bufnr].modifiable == false then
+-    return true
+-  end
+-
+-  return false
+-end
+-
+-vim.api.nvim_create_autocmd("BufLeave", {
+-  callback = function(args)
+-    local buf = args.buf
+-    -- If buffer itself is special (terminal/help etc) — ignore
+-    if vim.bo[buf].buftype ~= "" then
+-      return
+-    end
+-
+-    -- If buffer is modified, keep it
+-    if vim.bo[buf].modified then
++-- local autocomplete
++local triggers = { "." }
++vim.api.nvim_create_autocmd("InsertCharPre", {
++  buffer = vim.api.nvim_get_current_buf(),
++  callback = function()
++    if vim.fn.pumvisible() == 1 or vim.fn.state("m") == "m" then
+       return
+     end
+-
+-    -- If buffer is not listed, ignore
+-    if vim.fn.buflisted(buf) == 0 then
+-      return
++    local char = vim.v.char
++    if vim.list_contains(triggers, char) then
++      local key = vim.keycode("<C-x><C-n>")
++      vim.api.nvim_feedkeys(key, "m", false)
+     end
++  end,
++})
+ 
+-    -- Don't delete if it's the last listed buffer
+-    local listed = vim.tbl_filter(function(b)
+-      return vim.fn.buflisted(b) == 1
+-    end, vim.api.nvim_list_bufs())
+-
+-    if #listed <= 1 then
+-      return
++-- number toggel
++-- Add this to your init.lua
++vim.api.nvim_create_autocmd("BufReadPre", {
++  pattern = "*",
++  callback = function()
++    local size = vim.fn.getfsize(vim.fn.expand("<afile>"))
++    if size > 1024 * 1024 then -- Files > 1MB
++      -- 1. Switch from Relative to Absolute (Stops redraw lag)
++      vim.wo.relativenumber = false
++      vim.wo.number = true
++      -- 2. Cap the syntax scanning (Stops horizontal lag)
++      vim.opt_local.synmaxcol = 150
++      -- 3. Disable heavy features for this buffer only
++      vim.cmd("syntax sync minlines=10") -- Don't look too far back for context
+     end
+-
+-    -- Defer actual deletion check one tick and re-validate destination buffer.
+-    vim.schedule(function()
+-      -- buffer might have become invalid in the meantime
+-      if not vim.api.nvim_buf_is_valid(buf) then
+-        return
+-      end
+-
+-      -- If buffer became modified meanwhile, keep it
+-      if vim.bo[buf].modified then
+-        return
+-      end
+-
+-      -- Destination buffer: current buffer after leaving `buf`
+-      local dest = vim.api.nvim_get_current_buf()
+-
+-      -- If destination is transient (help, docs, diagnostics...), do NOT delete previous buffer.
+-      if is_transient_buf(dest) then
+-        return
+-      end
+-
+-      -- Recompute listed buffers (safety)
+-      local listed_now = vim.tbl_filter(function(b)
+-        return vim.fn.buflisted(b) == 1
+-      end, vim.api.nvim_list_bufs())
+-
+-      if #listed_now <= 1 then
+-        return
+-      end
+-
+-      -- Finally delete safely (no force)
+-      if vim.api.nvim_buf_is_valid(buf) then
+-        pcall(vim.api.nvim_buf_delete, buf, { force = false })
+-      end
+-    end)
+   end,
+ })
+diff --git a/lua/core/colour.lua b/lua/core/colour.lua
+deleted file mode 100644
+index 1d8ff54..0000000
+--- a/lua/core/colour.lua
++++ /dev/null
+@@ -1,79 +0,0 @@
+-local set = vim.api.nvim_set_hl
+-
+---------------------------------------------------
+--- Accent palette (complements Neovim defaults)
+---------------------------------------------------
+-local accent = {
+-  type = "#e0af68", -- amber (types) → contrasts green
+-  constant = "#9ece6a", -- green (aligns with native green)
+-  func = "#5f87d7", -- indigo (separate from default blue 🔵)
+-  macro = "#b38df7", -- violet (no collision)
+-  keyword = "#6fa4b8", -- muted teal (between cyan & blue)
+-}
+-
+---------------------------------------------------
+--- Core readability (ONE strong anchor)
+---------------------------------------------------
+-set(0, "CursorLineNr", { bold = true })
+-
+---------------------------------------------------
+--- Comments (ONLY italics in entire theme)
+---------------------------------------------------
+-set(0, "Comment", { italic = true, fg = "#5c6370" })
+-set(0, "@comment", { link = "Comment" })
+-set(0, "@lsp.type.comment", { link = "Comment" })
+-
+---------------------------------------------------
+--- Classic syntax (fallback)
+---------------------------------------------------
+-set(0, "Function", { fg = accent.func })
+-set(0, "Keyword", { fg = accent.keyword })
+-
+-set(0, "Type", { fg = accent.type })
+-set(0, "Constant", { fg = accent.constant })
+-
+---------------------------------------------------
+--- Tree-sitter (preferred)
+---------------------------------------------------
+-set(0, "@function", { fg = accent.func })
+-set(0, "@method", { fg = accent.func })
+-
+-set(0, "@keyword", { fg = accent.keyword })
+-
+-set(0, "@type", { fg = accent.type })
+-set(0, "@constant", { fg = accent.constant })
+-
+--- let Neovim's native cyan handle parameters
+-set(0, "@variable.parameter", {})
+-
+---------------------------------------------------
+--- LSP Semantic Tokens (highest priority)
+---------------------------------------------------
+-set(0, "@lsp.type.function", { fg = accent.func })
+-set(0, "@lsp.type.method", { fg = accent.func })
+-
+-set(0, "@lsp.type.keyword", { fg = accent.keyword })
+-
+-set(0, "@lsp.type.type", { fg = accent.type })
+-set(0, "@lsp.type.parameter", {})
+-
+--- readonly: subtle cue, no italics
+-set(0, "@lsp.mod.readonly", { underline = true })
+-
+---------------------------------------------------
+--- Macros / preprocessor
+---------------------------------------------------
+-set(0, "Macro", { fg = accent.macro })
+-set(0, "@macro", { link = "Macro" })
+-set(0, "@lsp.type.macro", { link = "Macro" })
+-
+---------------------------------------------------
+--- Diagnostics (clarity without noise)
+---------------------------------------------------
+-set(0, "DiagnosticError", {})
+-set(0, "DiagnosticWarn", {})
+-
+-set(0, "DiagnosticUnderlineError", { undercurl = true })
+-set(0, "DiagnosticUnderlineWarn", { undercurl = true })
+-set(0, "DiagnosticUnderlineInfo", { undercurl = true })
+-set(0, "DiagnosticUnderlineHint", { undercurl = true })
+diff --git a/lua/core/filetype.lua b/lua/core/filetype.lua
+new file mode 100644
+index 0000000..292932d
+--- /dev/null
++++ b/lua/core/filetype.lua
+@@ -0,0 +1,5 @@
++vim.filetype.add({
++  extension = {
++    c3 = "c3",
++  },
++})
+diff --git a/lua/core/indent-guide.lua b/lua/core/indent-guide.lua
+new file mode 100644
+index 0000000..c965ff4
+--- /dev/null
++++ b/lua/core/indent-guide.lua
+@@ -0,0 +1,63 @@
++-- 1. Global Enable
++vim.opt.list = true
++
++-- 2. The Ghost/Brightness Function
++-- Normal mode = 244 (visible grey), Insert mode = 234 (deep ghost)
++local function set_guide_brightness(is_insert)
++  if is_insert then
++    vim.cmd([[highlight Whitespace guifg=#2e3440 ctermfg=234]])
++  else
++    -- Using 244 for better Normal mode visibility as per your feedback
++    vim.cmd([[highlight Whitespace guifg=#4c566a ctermfg=244]])
++  end
++end
++
++-- 3. Dynamic Scaling Logic (Handles 2-4 spaces & EditorConfig)
++local function update_indent_guides()
++  local sw = vim.bo.shiftwidth
++  local space_count = (sw > 0) and sw or vim.bo.tabstop
++  if space_count <= 0 then
++    space_count = 4
++  end
++
++  local guide_char = "·"
++  local spaces = string.rep(" ", space_count - 1)
++  local dynamic_guide = guide_char .. spaces
++
++  -- Universal Package for Accuracy (catches tabs, trailing spaces, and NBSPs)
++  local str = table.concat({
++    "leadmultispace:" .. dynamic_guide,
++    "multispace:" .. dynamic_guide,
++    "tab:»—",
++    "trail:×",
++    "nbsp:␣",
++  }, ",")
++
++  vim.opt_local.listchars = str
++end
++
++-- 4. Mode-Switching Observers (The Ghost Effect)
++vim.api.nvim_create_autocmd({ "InsertEnter" }, {
++  callback = function()
++    set_guide_brightness(true)
++  end,
++})
++
++vim.api.nvim_create_autocmd({ "InsertLeave" }, {
++  callback = function()
++    set_guide_brightness(false)
++  end,
++})
++
++-- 5. The Initialization Observer (Handles pre-existing files and LSPs)
++vim.api.nvim_create_autocmd(
++  { "BufEnter", "BufReadPost", "FileType", "LspAttach" },
++  {
++    callback = function()
++      update_indent_guides()
++      set_guide_brightness(false)
++      -- Force a redraw so guides appear immediately on file open
++      vim.cmd("redraw")
++    end,
++  }
++)
+diff --git a/lua/core/keymap.lua b/lua/core/keymap.lua
+index 0b210df..bebcf5d 100644
+--- a/lua/core/keymap.lua
++++ b/lua/core/keymap.lua
+@@ -5,7 +5,7 @@ local opts = { noremap = true, silent = true }
+ map("n", "<leader>h", ":nohlsearch<CR>", opts)
+ map("n", "j", "gj", opts)
+ map("n", "k", "gk", opts)
+-map("n", "<leader>e", "<cmd>NvimTreeToggle<CR>", opts)
++-- map("n", "<leader>e", "<cmd>NvimTreeToggle<CR>", opts)
+ 
+ wk.add({
+   {
+@@ -18,10 +18,10 @@ wk.add({
+   { "j", "gj", desc = "Down (wrapped line)", mode = "n" },
+   { "k", "gk", desc = "Up (wrapped line)", mode = "n" },
+   -- File explorer
+-  {
+-    "<leader>e",
+-    "<cmd>NvimTreeToggle<CR>",
+-    desc = "Toggle file explorer",
+-    mode = "n",
+-  },
++  -- {
++  --   "<leader>e",
++  --    "<cmd>NvimTreeToggle<CR>",
++  --   desc = "Toggle file explorer",
++  --   mode = "n",
++  --  },
+ })
+diff --git a/lua/core/lsp.lua b/lua/core/lsp.lua
+index be2e78b..caa0be9 100644
+--- a/lua/core/lsp.lua
++++ b/lua/core/lsp.lua
+@@ -1,8 +1,8 @@
+--- lua/core/lsp.lua
+ local M = {}
+ 
++---------------------------------------------------------
+ -- Diagnostics
+-
++---------------------------------------------------------
+ vim.diagnostic.config({
+   virtual_text = true,
+   float = { border = "rounded" },
+@@ -18,206 +18,122 @@ vim.diagnostic.config({
+   },
+ })
+ 
+--- Global on_attach
++---------------------------------------------------------
++-- Hover & Signature UI Borders
++---------------------------------------------------------
++vim.lsp.handlers["textDocument/hover"] =
++  vim.lsp.buf.hover({ border = "rounded" })
++
++vim.lsp.handlers["textDocument/signatureHelp"] =
++  vim.lsp.buf.signature_help({ border = "rounded" })
++
++---------------------------------------------------------
++-- Capabilities
++---------------------------------------------------------
++-- local caps = vim.lsp.protocol.make_client_capabilities()
++-- local ok, cmp = pcall(require, "cmp_nvim_lsp")
++-- if ok then
++--   caps = cmp.default_capabilities(caps)
++-- end
++-- M.capabilities = caps
++
++---------------------------------------------------------
++-- Global LspAttach Handler
++---------------------------------------------------------
++vim.api.nvim_create_autocmd("LspAttach", {
++  group = vim.api.nvim_create_augroup("CoreLspAttach", {}),
++  callback = function(args)
++    local client = vim.lsp.get_client_by_id(args.data.client_id)
++    local bufnr = args.buf
++    if not client then
++      return
++    end
+ 
+----@diagnostic disable-next-line: unused-local
+-function M.on_attach(client, bufnr)
+-  local bufmap = function(mode, lhs, rhs, desc)
+-    vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
+-  end
++    local map = function(mode, lhs, rhs, desc)
++      vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
++    end
+ 
+-  bufmap("n", "gd", vim.lsp.buf.definition, "Go to Definition")
+-  bufmap("n", "gr", vim.lsp.buf.references, "Find References")
+-  bufmap("n", "K", function()
+-    vim.lsp.buf.hover({ border = "rounded" })
+-  end, "Hover Docs")
+-  bufmap("n", "<leader>rn", vim.lsp.buf.rename, "Rename Symbol")
+-  bufmap("n", "ca", vim.lsp.buf.code_action, "Code Action")
+-  bufmap("n", "<leader>sh", function()
+-    vim.lsp.buf.signature_help({ border = "rounded" })
+-  end, "Signature Help")
+-
+-  vim.keymap.set("n", "[d", function()
+-    vim.diagnostic.jump({ count = -1, float = true })
+-  end, { buffer = bufnr })
+-  vim.keymap.set("n", "]d", function()
+-    vim.diagnostic.jump({ count = 1, float = true })
+-  end, { buffer = bufnr })
+-  bufmap("n", "<leader>d", vim.diagnostic.open_float, "Line Diagnostics")
+-
+-  bufmap("n", "<leader>ds", vim.lsp.buf.document_symbol, "Document Symbols")
+-  bufmap("n", "<leader>ws", vim.lsp.buf.workspace_symbol, "Workspace Symbols")
+-end
++    -----------------------------------------------------
++    -- Keymaps
++    -----------------------------------------------------
+ 
+--- Capabilities (completion support)
++    if client:supports_method("textDocument/definition") then
++      map("n", "gd", vim.lsp.buf.definition, "Go to Definition")
++    end
+ 
+-local capabilities = vim.lsp.protocol.make_client_capabilities()
+-local ok_cmp, cmp_lsp = pcall(require, "cmp_nvim_lsp")
+-if ok_cmp then
+-  capabilities = cmp_lsp.default_capabilities(capabilities)
+-end
+-M.capabilities = capabilities
++    if client:supports_method("textDocument/references") then
++      map("n", "gr", vim.lsp.buf.references, "Find References")
++    end
+ 
+--- Helper: Build root_dir function if only root_markers exists
+-local function build_root_dir_from_markers(markers)
+-  return function(fname)
+-    if not markers or not vim.islist(markers) then
+-      return vim.fn.fnamemodify(fname, ":p:h")
++    if client:supports_method("textDocument/hover") then
++      map("n", "K", vim.lsp.buf.hover, "Hover Docs")
+     end
+-    return vim.fs.root(fname, markers) or vim.fn.fnamemodify(fname, ":p:h")
+-  end
+-end
+ 
+--- Infer the root directory logic for each server config:
+-local function inject_root_dir(server)
+-  if server.root_dir then
+-    return server
+-  end
+-  if server.root_markers then
+-    server.root_dir = build_root_dir_from_markers(server.root_markers)
+-  end
+-  return server
+-end
++    if client:supports_method("textDocument/rename") then
++      map("n", "<leader>rn", vim.lsp.buf.rename, "Rename Symbol")
++    end
+ 
+--- Register server: minimal, clean, fast
++    if client:supports_method("textDocument/codeAction") then
++      map("n", "ca", vim.lsp.buf.code_action, "Code Action")
++    end
+ 
+-local function register_server_table(name, server)
+-  if not server or not server.filetypes then
+-    return
+-  end
++    if client:supports_method("textDocument/signatureHelp") then
++      map("n", "<leader>sh", vim.lsp.buf.signature_help, "Signature Help")
++    end
+ 
+-  inject_root_dir(server)
+-
+-  vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
+-    callback = function(args)
+-      local bufnr = args.buf
+-      local ft = vim.bo[bufnr].filetype
+-
+-      if not vim.tbl_contains(server.filetypes, ft) then
+-        return
+-      end
+-
+-      local fname = vim.api.nvim_buf_get_name(bufnr)
+-      local root_dir = nil
+-
+-      if type(server.root_dir) == "function" then
+-        local ok, ret = pcall(server.root_dir, fname)
+-        root_dir = (ok and ret) or nil
+-      end
+-
+-      root_dir = root_dir or vim.loop.cwd()
+-
+-      local on_attach = server.on_attach
+-          and function(client, b)
+-            M.on_attach(client, b)
+-            server.on_attach(client, b)
+-          end
+-        or M.on_attach
+-
+-      -- Merge completion capabilities (unchanged logic)
+-      local final_capabilities = server.capabilities
+-          and vim.tbl_deep_extend(
+-            "force",
+-            vim.deepcopy(M.capabilities),
+-            server.capabilities
+-          )
+-        or vim.deepcopy(M.capabilities)
+-
+-      local opts = {
+-        name = name,
+-        cmd = server.cmd,
+-        filetypes = server.filetypes,
+-        root_dir = root_dir,
+-        on_attach = on_attach,
+-        capabilities = final_capabilities,
+-        settings = server.settings,
+-        handlers = server.handlers,
+-        flags = server.flags
+-          or { debounce_text_changes = 50, exit_timeout = 500 },
+-        init_options = server.init_options,
+-        on_init = server.on_init,
+-        commands = server.commands,
+-      }
+-
+-      if
+-        type(opts.cmd) == "table"
+-        and opts.cmd[1]
+-        and vim.fn.executable(opts.cmd[1]) == 0
+-      then
+-        vim.notify(
+-          ("[LSP] Skipping '%s': Binary '%s' not executable."):format(
+-            name,
+-            opts.cmd[1]
+-          ),
+-          vim.log.levels.WARN
+-        )
+-        return
+-      end
+-
+-      vim.lsp.start(opts)
+-    end,
+-  })
+-end
++    -----------------------------------------------------
++    -- Diagnostics Navigation
++    -----------------------------------------------------
++    map("n", "[d", function()
++      vim.diagnostic.jump({ count = -1, float = true })
++    end, "Prev Diagnostic")
+ 
+-M.register_server_table = register_server_table
++    map("n", "]d", function()
++      vim.diagnostic.jump({ count = 1, float = true })
++    end, "Next Diagnostic")
+ 
+--- Auto-load server files: lua/lsp/servers/*.lua
+-function M.setup_servers()
+-  local dir = vim.fn.stdpath("config") .. "/lua/lsp/servers"
+-  local ok = pcall(vim.loop.fs_stat, dir)
+-  if not ok then
+-    return
+-  end
++    map("n", "<leader>d", vim.diagnostic.open_float, "Line Diagnostics")
+ 
+-  local files = vim.fn.globpath(dir, "*.lua", false, true)
+-  for _, f in ipairs(files) do
+-    local name = vim.fn.fnamemodify(f, ":t:r")
+-    local ok2, server = pcall(require, "lsp.servers." .. name)
+-    if ok2 and server then
+-      register_server_table(server.name or name, server)
++    -----------------------------------------------------
++    -- Symbols
++    -----------------------------------------------------
++    if client:supports_method("textDocument/documentSymbol") then
++      map("n", "<leader>ds", vim.lsp.buf.document_symbol, "Document Symbols")
+     end
+-  end
+-end
+ 
+--- Commands
+-local expected_lsps = {
+-  lua_ls = "lua-language-server",
+-  clangd = "clangd",
+-  python = "basedpyright", -- update to "basedpyright-langserver" if you use basedpyright only
+-  yamlls = "yaml-language-server",
+-  ts_ls = "typescript-language-server",
+-  cssls = "vscode-css-language-server",
+-  perlls = "pls",
+-}
+-
+-vim.api.nvim_create_user_command("NativeLspInfo", function()
+-  local bufnr = vim.api.nvim_get_current_buf()
+-
+-  local missing = {}
+-  for lsp, bin in pairs(expected_lsps) do
+-    if vim.fn.executable(bin) == 0 then
+-      table.insert(missing, lsp .. " (" .. bin .. ")")
++    if client:supports_method("workspace/symbol") then
++      map("n", "<leader>ws", vim.lsp.buf.workspace_symbol, "Workspace Symbols")
+     end
+-  end
+-  if #missing > 0 then
+-    print("Warning: Missing LSP binaries: " .. table.concat(missing, ", "))
+-  end
+ 
+-  local clients = vim.lsp.get_clients({ bufnr = bufnr })
+-  if vim.tbl_isempty(clients) then
+-    print("No active LSP clients attached")
+-    return
+-  end
++    -----------------------------------------------------
++    -- Completion
++    -----------------------------------------------------
++    if client:supports_method("textDocument/completion") then
++      vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = true })
++    end
++    map("i", "<c-space>", function()
++      vim.lsp.completion.get()
++    end)
++  end,
++})
+ 
+-  print("Active LSP Clients:")
+-  for _, client in ipairs(clients) do
+-    print("  - " .. client.name)
+-    if client.config.root_dir then
+-      print("Root: " .. tostring(client.config.root_dir))
++---------------------------------------------------------
++-- Load Server Configs
++---------------------------------------------------------
++function M.setup_servers()
++  local dir = vim.fn.stdpath("config") .. "/lua/lsp/servers"
++  for _, file in ipairs(vim.fn.globpath(dir, "*.lua", false, true)) do
++    local name = vim.fn.fnamemodify(file, ":t:r")
++    local ok2, server = pcall(require, "lsp.servers." .. name)
++    if ok2 and server then
++      vim.lsp.config[name] = vim.tbl_deep_extend("force", {
++        capabilities = M.capabilities,
++      }, server)
++
++      vim.lsp.enable(name)
+     end
+   end
+-end, {})
++end
+ 
+--- Auto-run all server files
+ M.setup_servers()
+ return M
+diff --git a/lua/core/options.lua b/lua/core/options.lua
+index f828729..bdd5ecb 100644
+--- a/lua/core/options.lua
++++ b/lua/core/options.lua
+@@ -12,9 +12,9 @@ opt.clipboard = "unnamedplus" -- Use system clipboard (if available)
+ opt.completeopt = { "menuone", "noselect" }
+ 
+ -- Indentation
+-opt.expandtab = true -- Use spaces instead of tabs
+-opt.shiftwidth = 2 -- Size of an indent
+-opt.tabstop = 2 -- Number of spaces tabs count for
++-- opt.expandtab = true -- Use spaces instead of tabs
++-- opt.shiftwidth = 2 -- Size of an indent
++-- opt.tabstop = 2 -- Number of spaces tabs count for
+ opt.smartindent = true -- Auto indent new lines
+ 
+ -- UI
+@@ -39,7 +39,7 @@ opt.timeoutlen = 500
+ opt.swapfile = false
+ opt.backup = false
+ opt.undofile = true -- Persistent undo
+-opt.autowrite = true -- Auto save before actions like :next or :make
++opt.autowrite = false
+ 
+ -- Termux / Mobile Friendly
+ g.loaded_python_provider = 0 -- Disable Python2 provider
+@@ -59,3 +59,6 @@ vim.o.fileencoding = "utf-8"
+ -- Cursor
+ opt.cursorline = true
+ opt.cursorcolumn = false
++
++-- boarder
++opt.winborder = "rounded"
+diff --git a/lua/core/statusline.lua b/lua/core/statusline.lua
+new file mode 100644
+index 0000000..7e0c50e
+--- /dev/null
++++ b/lua/core/statusline.lua
+@@ -0,0 +1,150 @@
++-- BY Radley Sidwell-Lewis --
++-- https://github.com/radleylewis/nvim-lite
++-- ============================================================================
++-- STATUSLINE
++-- ============================================================================
++
++-- Git branch function with caching and Nerd Font icon
++local cached_branch = ""
++local last_check = 0
++local function git_branch()
++  local now = vim.loop.now()
++  if now - last_check > 5000 then -- Check every 5 seconds
++    cached_branch =
++      vim.fn.system("git branch --show-current 2>/dev/null | tr -d '\n'")
++    last_check = now
++  end
++  if cached_branch ~= "" then
++    return " \u{e725} " .. cached_branch .. " " -- nf-dev-git_branch
++  end
++  return ""
++end
++
++-- File type with Nerd Font icon
++local function file_type()
++  local ft = vim.bo.filetype
++  local icons = {
++    lua = "\u{e620} ", -- nf-dev-lua
++    python = "\u{e73c} ", -- nf-dev-python
++    javascript = "\u{e74e} ", -- nf-dev-javascript
++    typescript = "\u{e628} ", -- nf-dev-typescript
++    javascriptreact = "\u{e7ba} ",
++    typescriptreact = "\u{e7ba} ",
++    html = "\u{e736} ", -- nf-dev-html5
++    css = "\u{e749} ", -- nf-dev-css3
++    scss = "\u{e749} ",
++    json = "\u{e60b} ", -- nf-dev-json
++    markdown = "\u{e73e} ", -- nf-dev-markdown
++    vim = "\u{e62b} ", -- nf-dev-vim
++    sh = "\u{f489} ", -- nf-oct-terminal
++    bash = "\u{f489} ",
++    zsh = "\u{f489} ",
++    rust = "\u{e7a8} ", -- nf-dev-rust
++    go = "\u{e724} ", -- nf-dev-go
++    c = "\u{e61e} ", -- nf-dev-c
++    cpp = "\u{e61d} ", -- nf-dev-cplusplus
++    java = "\u{e738} ", -- nf-dev-java
++    php = "\u{e73d} ", -- nf-dev-php
++    ruby = "\u{e739} ", -- nf-dev-ruby
++    swift = "\u{e755} ", -- nf-dev-swift
++    kotlin = "\u{e634} ",
++    dart = "\u{e798} ",
++    elixir = "\u{e62d} ",
++    haskell = "\u{e777} ",
++    sql = "\u{e706} ",
++    yaml = "\u{f481} ",
++    toml = "\u{e615} ",
++    xml = "\u{f05c} ",
++    dockerfile = "\u{f308} ", -- nf-linux-docker
++    gitcommit = "\u{f418} ", -- nf-oct-git_commit
++    gitconfig = "\u{f1d3} ", -- nf-fa-git
++    vue = "\u{fd42} ", -- nf-md-vuejs
++    svelte = "\u{e697} ",
++    astro = "\u{e628} ",
++  }
++
++  if ft == "" then
++    return " \u{f15b} " -- nf-fa-file_o
++  end
++
++  return ((icons[ft] or " \u{f15b} ") .. ft)
++end
++
++-- File size with Nerd Font icon
++local function file_size()
++  local size = vim.fn.getfsize(vim.fn.expand("%"))
++  if size < 0 then
++    return ""
++  end
++  local size_str
++  if size < 1024 then
++    size_str = size .. "B"
++  elseif size < 1024 * 1024 then
++    size_str = string.format("%.1fK", size / 1024)
++  else
++    size_str = string.format("%.1fM", size / 1024 / 1024)
++  end
++  return " \u{f016} " .. size_str .. " " -- nf-fa-file_o
++end
++
++-- Mode indicators with Nerd Font icons
++local function mode_icon()
++  local mode = vim.fn.mode()
++  local modes = {
++    n = " \u{f121}  NORMAL",
++    i = " \u{f11c}  INSERT",
++    v = " \u{f0168} VISUAL",
++    V = " \u{f0168} V-LINE",
++    ["\22"] = " \u{f0168} V-BLOCK",
++    c = " \u{f120} COMMAND",
++    s = " \u{f0c5} SELECT",
++    S = " \u{f0c5} S-LINE",
++    ["\19"] = " \u{f0c5} S-BLOCK",
++    R = " \u{f044} REPLACE",
++    r = " \u{f044} REPLACE",
++    ["!"] = " \u{f489} SHELL",
++    t = " \u{f120} TERMINAL",
++  }
++  return modes[mode] or (" \u{f059} " .. mode)
++end
++
++_G.mode_icon = mode_icon
++_G.git_branch = git_branch
++_G.file_type = file_type
++_G.file_size = file_size
++
++vim.cmd([[
++  highlight StatusLineBold gui=bold cterm=bold
++]])
++
++-- Function to change statusline based on window focus
++local function setup_dynamic_statusline()
++  vim.api.nvim_create_autocmd({ "WinEnter", "BufEnter" }, {
++    callback = function()
++      vim.opt_local.statusline = table.concat({
++        "  ",
++        "%#StatusLineBold#",
++        "%{v:lua.mode_icon()}",
++        "%#StatusLine#",
++        " \u{e0b1} %f %h%m%r", -- nf-pl-left_hard_divider
++        "%{v:lua.git_branch()}",
++        "\u{e0b1} ", -- nf-pl-left_hard_divider
++        "%{v:lua.file_type()}",
++        "\u{e0b1} ", -- nf-pl-left_hard_divider
++        "%{v:lua.file_size()}",
++        "%=", -- Right-align everything after this
++        " \u{f017} %l:%c  %P ", -- nf-fa-clock_o for line/col
++      })
++    end,
++  })
++  vim.api.nvim_set_hl(0, "StatusLineBold", { bold = true })
++
++  vim.api.nvim_create_autocmd({ "WinLeave", "BufLeave" }, {
++    callback = function()
++      vim.opt_local.statusline =
++        "  %f %h%m%r \u{e0b1} %{v:lua.file_type()} %=  %l:%c   %P "
++    end,
++  })
++end
++
++setup_dynamic_statusline()
+diff --git a/lua/lsp/servers/serve_d.lua b/lua/lsp/servers/serve_d.lua
+new file mode 100644
+index 0000000..6a14502
+--- /dev/null
++++ b/lua/lsp/servers/serve_d.lua
+@@ -0,0 +1,13 @@
++---@brief
++---
++--- https://github.com/Pure-D/serve-d
++---
++--- Microsoft language server protocol implementation for D using workspace-d.
++--- Download a binary from https://github.com/Pure-D/serve-d/releases and put it in your $PATH.
++
++---@type vim.lsp.Config
++return {
++  cmd = { "serve-d" },
++  filetypes = { "d" },
++  root_markers = { "dub.json", "dub.sdl", ".git" },
++}
+diff --git a/lua/plugins/autocompletion.lua b/lua/plugins/autocompletion.lua
+deleted file mode 100644
+index 07a1b49..0000000
+--- a/lua/plugins/autocompletion.lua
++++ /dev/null
+@@ -1,201 +0,0 @@
+-return {
+-  "hrsh7th/nvim-cmp",
+-
+-  -- Load when entering insert mode or reading a buffer
+-  event = { "LspAttach" },
+-
+-  dependencies = {
+-    -- Core completion sources
+-    "hrsh7th/cmp-nvim-lsp",
+-    "hrsh7th/cmp-buffer",
+-    "hrsh7th/cmp-path",
+-    "hrsh7th/cmp-nvim-lsp-signature-help",
+-
+-    -- Snippet engine
+-    {
+-      "L3MON4D3/LuaSnip",
+-      build = (function()
+-        if vim.fn.has("win32") == 1 or vim.fn.executable("make") == 0 then
+-          return
+-        end
+-        return "make install_jsregexp"
+-      end)(),
+-      dependencies = {
+-        "rafamadriz/friendly-snippets",
+-        config = function()
+-          require("luasnip.loaders.from_vscode").lazy_load()
+-        end,
+-      },
+-    },
+-
+-    -- cmp snippet source
+-    "saadparwaiz1/cmp_luasnip",
+-  },
+-
+-  config = function()
+-    local cmp = require("cmp")
+-    local luasnip = require("luasnip")
+-    local wk = require("which-key")
+-
+-    -- setup snippet
+-    luasnip.config.setup({
+-      history = true,
+-      updateevents = "TextChanged",
+-      "TextChangedI",
+-    })
+-
+-    -- icons
+-    local kind_icons = {
+-      Text = "󰉿",
+-      Method = "󰆧",
+-      Function = "󰊕",
+-      Constructor = "",
+-      Field = "",
+-      Variable = "󰀫",
+-      Class = "󰌗",
+-      Interface = "",
+-      Module = "",
+-      Property = "",
+-      Unit = "",
+-      Value = "󰎠",
+-      Enum = "",
+-      Keyword = "󰌋",
+-      Snippet = "",
+-      Color = "󰏘",
+-      File = "󰈙",
+-      Reference = "",
+-      Folder = "󰉋",
+-      EnumMember = "",
+-      Constant = "󰇽",
+-      Struct = "",
+-      Event = "",
+-      Operator = "󰆕",
+-      TypeParameter = "󰊄",
+-    }
+-
+-    cmp.setup({
+-      enabled = function()
+-        local buftype = vim.bo.buftype
+-        if buftype == "prompt" then
+-          return false
+-        end
+-
+-        local ft = vim.bo.filetype
+-        local blacklist = {
+-          markdown = true,
+-          gitcommit = true,
+-          text = true,
+-          help = true,
+-        }
+-
+-        return not blacklist[ft]
+-      end,
+-
+-      snippet = {
+-        expand = function(args)
+-          luasnip.lsp_expand(args.body)
+-        end,
+-      },
+-
+-      completion = {
+-        completeopt = "menu,menuone,noinsert",
+-        autocomplete = { cmp.TriggerEvent.TextChanged },
+-        keyword_length = 1,
+-        max_item_count = 8,
+-      },
+-
+-      performance = {
+-        debounce = 60,
+-        throttle = 30,
+-        fetching_timeout = 500,
+-        confirm_resolve_timeout = 80,
+-        async_budget = 1,
+-        max_view_entries = 120,
+-      },
+-
+-      window = {
+-        completion = cmp.config.window.bordered({
+-          border = "rounded",
+-        }),
+-        documentation = cmp.config.window.bordered({
+-          border = "rounded",
+-        }),
+-      },
+-
+-      mapping = cmp.mapping.preset.insert({
+-        ["<Tab>"] = cmp.mapping(function(fallback)
+-          if cmp.visible() then
+-            cmp.select_next_item()
+-          elseif luasnip.expand_or_locally_jumpable() then
+-            luasnip.expand_or_jump()
+-          else
+-            fallback()
+-          end
+-        end, { "i", "s" }),
+-
+-        ["<S-Tab>"] = cmp.mapping(function(fallback)
+-          if cmp.visible() then
+-            cmp.select_prev_item()
+-          elseif luasnip.locally_jumpable(-1) then
+-            luasnip.jump(-1)
+-          else
+-            fallback()
+-          end
+-        end, { "i", "s" }),
+-
+-        ["<CR>"] = cmp.mapping.confirm({ select = false }),
+-        ["<C-Space>"] = cmp.mapping.complete(),
+-        ["<C-b>"] = cmp.mapping.scroll_docs(-4),
+-        ["<C-f>"] = cmp.mapping.scroll_docs(4),
+-      }),
+-
+-      sources = cmp.config.sources({
+-        { name = "nvim_lsp" },
+-        { name = "luasnip" },
+-        { name = "nvim_lsp_signature_help" },
+-      }, {
+-        { name = "buffer", keyword_length = 3, max_item_count = 5 },
+-        { name = "path", keyword_length = 2 },
+-      }),
+-
+-      formatting = {
+-        fields = { "kind", "abbr", "menu" },
+-        format = function(entry, vim_item)
+-          vim_item.kind = (kind_icons[vim_item.kind] or "") .. " "
+-          vim_item.menu = ({
+-            nvim_lsp = "󰒋 LSP",
+-            luasnip = "󰘌 Snip",
+-            buffer = "󰈙 Buf",
+-            path = "󰉋 Path",
+-            nvim_lsp_signature_help = "󰆩 Sig",
+-          })[entry.source.name]
+-          return vim_item
+-        end,
+-      },
+-
+-      experimental = {
+-        ghost_text = { hl_group = "CmpGhostText" },
+-      },
+-    })
+-
+-    vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
+-
+-    -- toggle cmp
+-    vim.keymap.set("n", "<leader>ut", function()
+-      local enabled = cmp.get_config().enabled ~= false
+-      cmp.setup({ enabled = not enabled })
+-      print("Cmp " .. (enabled and "OFF" or "ON"))
+-    end, { desc = "Toggle cmp" })
+-
+-    -- which-key registration
+-    wk.add({
+-      { "<Tab>", "Next completion / expand snippet", mode = { "i", "s" } },
+-      { "<S-Tab>", "Prev completion / jump snippet", mode = { "i", "s" } },
+-      { "<C-Space>", "Trigger completion", mode = "i" },
+-      { "<C-b>", "Scroll docs up", mode = "i" },
+-      { "<C-f>", "Scroll docs down", mode = "i" },
+-      { "<leader>u", group = "utility" },
+-      { "<leader>ut", desc = "Toggle cmp", mode = "n" },
+-    })
+-  end,
+-}
+diff --git a/lua/plugins/indentation.lua b/lua/plugins/indentation.lua
+deleted file mode 100644
+index 2b92a5c..0000000
+--- a/lua/plugins/indentation.lua
++++ /dev/null
+@@ -1,35 +0,0 @@
+-return {
+-  "lukas-reineke/indent-blankline.nvim",
+-  main = "ibl",
+-  event = { "VeryLazy" },
+-  ---@module "ibl"
+-  ---@diagnostic disable-next-line: undefined-doc-name
+-  ---@type ibl.config
+-  opts = {
+-    -- Character for indentation
+-    indent = {
+-      char = "▏",
+-    },
+-
+-    -- Current scope highlight
+-    scope = {
+-      enabled = true,
+-      show_start = true, -- glow at the start of scope
+-      show_end = false, -- don't highlight end
+-      show_exact_scope = false, -- only current scope
+-    },
+-
+-    -- Exclude certain filetypes
+-    exclude = {
+-      filetypes = {
+-        "help",
+-        "startify",
+-        "dashboard",
+-        "packer",
+-        "neogitstatus",
+-        "NvimTree",
+-        "Trouble",
+-      },
+-    },
+-  },
+-}
+diff --git a/lua/plugins/lsp-progress.lua b/lua/plugins/lsp-progress.lua
+deleted file mode 100644
+index 9c5cac7..0000000
+--- a/lua/plugins/lsp-progress.lua
++++ /dev/null
+@@ -1,7 +0,0 @@
+-return {
+-  "linrongbin16/lsp-progress.nvim",
+-  event = "LspAttach",
+-  config = function()
+-    require("lsp-progress").setup()
+-  end,
+-}
+diff --git a/lua/plugins/lualine.lua b/lua/plugins/lualine.lua
+deleted file mode 100644
+index 34cf965..0000000
+--- a/lua/plugins/lualine.lua
++++ /dev/null
+@@ -1,105 +0,0 @@
+--- File: lua/plugins/lualine.lua
+-return {
+-  "nvim-lualine/lualine.nvim",
+-  event = "VeryLazy",
+-  dependencies = {
+-    "nvim-tree/nvim-web-devicons",
+-    "linrongbin16/lsp-progress.nvim",
+-  },
+-  config = function()
+-    local ok, lualine = pcall(require, "lualine")
+-    if not ok then
+-      return
+-    end
+-
+-    local colors = {
+-      bg = "#1e1e2e",
+-      fg = "#cdd6f4",
+-      yellow = "#f9e2af",
+-      cyan = "#94e2d5",
+-      darkblue = "#89b4fa",
+-      green = "#a6e3a1",
+-      orange = "#fab387",
+-      violet = "#cba6f7",
+-      magenta = "#f5c2e7",
+-      blue = "#89b4fa",
+-      red = "#f38ba8",
+-    }
+-
+-    local catppuccin_theme = {
+-      normal = {
+-        a = { bg = colors.blue, fg = colors.bg, gui = "bold" },
+-        b = { bg = colors.bg, fg = colors.fg },
+-        c = { bg = colors.bg, fg = colors.fg },
+-      },
+-      insert = { a = { bg = colors.green, fg = colors.bg, gui = "bold" } },
+-      visual = { a = { bg = colors.magenta, fg = colors.bg, gui = "bold" } },
+-      replace = { a = { bg = colors.red, fg = colors.bg, gui = "bold" } },
+-      command = { a = { bg = colors.yellow, fg = colors.bg, gui = "bold" } },
+-      inactive = {
+-        a = { bg = colors.bg, fg = colors.fg, gui = "bold" },
+-        b = { bg = colors.bg, fg = colors.fg },
+-        c = { bg = colors.bg, fg = colors.fg },
+-      },
+-    }
+-
+-    lualine.setup({
+-      options = {
+-        theme = catppuccin_theme,
+-        section_separators = { left = "", right = "" },
+-        component_separators = { left = "", right = "" },
+-        globalstatus = true,
+-        disabled_filetypes = { statusline = { "NvimTree", "lazy" } },
+-      },
+-      sections = {
+-        lualine_a = { { "mode", icon = "" } },
+-        lualine_b = { "branch", "diff", "diagnostics" },
+-        lualine_c = {
+-          {
+-            "filename",
+-            path = 1,
+-            symbols = {
+-              modified = " ●",
+-              readonly = " 󰌾",
+-              unnamed = "[No Name]",
+-            },
+-          },
+-          {
+-            function()
+-              return require("lsp-progress").progress()
+-            end,
+-          },
+-        },
+-        lualine_x = {
+-          {
+-            require("lazy.status").updates,
+-            cond = require("lazy.status").has_updates,
+-            color = { fg = colors.green },
+-          },
+-          "encoding",
+-          "fileformat",
+-          "filetype",
+-        },
+-        lualine_y = { "progress" },
+-        lualine_z = { { "location", icon = "" } },
+-      },
+-      inactive_sections = {
+-        lualine_a = {},
+-        lualine_b = {},
+-        lualine_c = { "filename" },
+-        lualine_x = { "location" },
+-        lualine_y = {},
+-        lualine_z = {},
+-      },
+-      extensions = { "lazy", "nvim-tree", "fugitive", "toggleterm" },
+-    })
+-
+-    -- refresh lualine when LSP progress updates
+-    vim.api.nvim_create_augroup("lualine_augroup", { clear = true })
+-    vim.api.nvim_create_autocmd("User", {
+-      group = "lualine_augroup",
+-      pattern = "LspProgressStatusUpdated",
+-      callback = require("lualine").refresh,
+-    })
+-  end,
+-}
+diff --git a/lua/plugins/markdown.lua b/lua/plugins/markdown.lua
+new file mode 100644
+index 0000000..ae8ee85
+--- /dev/null
++++ b/lua/plugins/markdown.lua
+@@ -0,0 +1,7 @@
++return {
++  "yousefhadder/markdown-plus.nvim",
++  ft = { "markdown", "text", "txt" },
++  opts = {
++    filetypes = { "markdown", "text", "txt" },
++  },
++}
+diff --git a/lua/plugins/nvim-colorizer.lua b/lua/plugins/nvim-colorizer.lua
+deleted file mode 100644
+index 49ad7a5..0000000
+--- a/lua/plugins/nvim-colorizer.lua
++++ /dev/null
+@@ -1,18 +0,0 @@
+-return {
+-  "norcalli/nvim-colorizer.lua",
+-  event = "BufReadPre",
+-  config = function()
+-    require("colorizer").setup({
+-      "*", -- all filetypes
+-    }, {
+-      RGB = true,
+-      RRGGBB = true,
+-      RRGGBBAA = true,
+-      css = true,
+-      css_fn = true,
+-      hsl_fn = true,
+-      names = false,
+-      mode = "background",
+-    })
+-  end,
+-}
+diff --git a/lua/plugins/nvim-tree.lua b/lua/plugins/nvim-tree.lua
+deleted file mode 100644
+index 40e9b7c..0000000
+--- a/lua/plugins/nvim-tree.lua
++++ /dev/null
+@@ -1,11 +0,0 @@
+-return {
+-  "nvim-tree/nvim-tree.lua",
+-  version = "*",
+-  lazy = false,
+-  dependencies = {
+-    "nvim-tree/nvim-web-devicons",
+-  },
+-  config = function()
+-    require("nvim-tree").setup({})
+-  end,
+-}
+diff --git a/lua/plugins/telescope.lua b/lua/plugins/telescope.lua
+index 30442b8..2511051 100644
+--- a/lua/plugins/telescope.lua
++++ b/lua/plugins/telescope.lua
+@@ -67,7 +67,7 @@ return {
+     )
+     vim.keymap.set(
+       "n",
+-      "<leader>gg",
++      "<leader>gf",
+       builtin.git_files,
+       { desc = "Find Git Files" }
+     )
+@@ -114,7 +114,7 @@ return {
+         desc = "Find Buffers",
+       },
+       {
+-        "<leader>gg",
++        "<leader>gf",
+         function()
+           require("telescope.builtin").git_files()
+         end,
+diff --git a/lua/plugins/tree-sitter.lua b/lua/plugins/tree-sitter.lua
+deleted file mode 100644
+index f3b0b9c..0000000
+--- a/lua/plugins/tree-sitter.lua
++++ /dev/null
+@@ -1,80 +0,0 @@
+--- treesitter.lua
+-return {
+-  "nvim-treesitter/nvim-treesitter",
+-  build = ":TSUpdate",
+-  branch = "master",
+-  event = { "BufReadPost", "BufNewFile" },
+-  cmd = { "TSUpdate", "TSInstall", "TSLog", "TSUninstall" },
+-
+-  config = function()
+-    require("nvim-treesitter.configs").setup({
+-      -- Languages to install
+-      ensure_installed = {
+-        "bash",
+-        "lua",
+-        "markdown",
+-        "markdown_inline",
+-        "query",
+-        "regex",
+-        "vim",
+-        "vimdoc",
+-      },
+-      sync_install = false,
+-      auto_install = true,
+-      highlight = {
+-        enable = true,
+-        additional_vim_regex_highlighting = false,
+-        disable = function(_, buf)
+-          local max_filesize = 50 * 1024 -- 150 KB limit for mobile speed
+-          local ok, stats =
+-            pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+-          if ok and stats and stats.size > max_filesize then
+-            return true
+-          end
+-          return false
+-        end,
+-      },
+-
+-      indent = { enable = false },
+-
+-      incremental_selection = {
+-        enable = true,
+-        keymaps = {
+-          init_selection = "<CR>",
+-          node_incremental = "<CR>",
+-          scope_incremental = "<S-CR>",
+-          node_decremental = "<BS>",
+-        },
+-      },
+-
+-      textobjects = {
+-        select = {
+-          enable = true,
+-          lookahead = true,
+-          keymaps = {
+-            ["af"] = "@function.outer",
+-            ["if"] = "@function.inner",
+-            ["ac"] = "@class.outer",
+-            ["ic"] = "@class.inner",
+-          },
+-        },
+-        move = {
+-          enable = true,
+-          set_jumps = true,
+-          goto_next_start = {
+-            ["]m"] = "@function.outer",
+-            ["]]"] = "@class.outer",
+-          },
+-          goto_previous_start = {
+-            ["[m"] = "@function.outer",
+-            ["[["] = "@class.outer",
+-          },
+-        },
+-      },
+-
+-      matchup = { enable = true },
+-      autopairs = { enable = true },
+-      rainbow = { enable = false }, -- Disabled to prevent mobile lag
+-    })
+-  end,
+-}
+-- 
+2.53.0
+
