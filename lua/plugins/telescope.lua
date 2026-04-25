@@ -67,7 +67,7 @@ return {
     )
     vim.keymap.set(
       "n",
-      "<leader>gg",
+      "<leader>gf",
       builtin.git_files,
       { desc = "Find Git Files" }
     )
@@ -114,7 +114,7 @@ return {
         desc = "Find Buffers",
       },
       {
-        "<leader>gg",
+        "<leader>gf",
         function()
           require("telescope.builtin").git_files()
         end,
