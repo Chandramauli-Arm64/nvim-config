@@ -3,11 +3,26 @@ local M = {}
 ---------------------------------------------------------
 -- Diagnostics
 ---------------------------------------------------------
+local signs = {
+  [vim.diagnostic.severity.ERROR] = "",
+  [vim.diagnostic.severity.WARN] = "",
+  [vim.diagnostic.severity.HINT] = "󰌵",
+  [vim.diagnostic.severity.INFO] = "",
+}
+
+local hl_map = {
+  [vim.diagnostic.severity.ERROR] = "DiagnosticError",
+  [vim.diagnostic.severity.WARN] = "DiagnosticWarn",
+  [vim.diagnostic.severity.HINT] = "DiagnosticHint",
+  [vim.diagnostic.severity.INFO] = "DiagnosticInfo",
+}
+
 vim.diagnostic.config({
   virtual_text = true,
   float = { border = "rounded" },
   underline = true,
   update_in_insert = false,
+
   signs = {
     text = {
       [vim.diagnostic.severity.ERROR] = " ",
@@ -16,8 +31,30 @@ vim.diagnostic.config({
       [vim.diagnostic.severity.INFO] = " ",
     },
   },
-})
 
+  status = {
+    format = function(counts)
+      local items = {}
+
+      for _, level in ipairs({
+        vim.diagnostic.severity.ERROR,
+        vim.diagnostic.severity.WARN,
+        vim.diagnostic.severity.INFO,
+        vim.diagnostic.severity.HINT,
+      }) do
+        local count = counts[level]
+        if count and count > 0 then
+          table.insert(
+            items,
+            ("%%#%s#%s %d"):format(hl_map[level], signs[level], count)
+          )
+        end
+      end
+
+      return table.concat(items, " ")
+    end,
+  },
+})
 ---------------------------------------------------------
 -- Hover & Signature UI Borders
 ---------------------------------------------------------

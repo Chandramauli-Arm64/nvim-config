@@ -62,3 +62,6 @@ opt.cursorcolumn = false
 
 -- boarder
 opt.winborder = "rounded"
+
+-- Autocomplete
+vim.o.autocomplete = true
