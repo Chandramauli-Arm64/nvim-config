@@ -1,63 +1,72 @@
 -- 1. Global Enable
 vim.opt.list = true
 
--- 2. The Ghost/Brightness Function
--- Normal mode = 244 (visible grey), Insert mode = 234 (deep ghost)
+-- 2. State (avoid redundant work)
+local state = {
+  is_insert = false,
+  indent_size = nil,
+}
+
+-- 3. Highlight (fast API, cached)
 local function set_guide_brightness(is_insert)
+  if state.is_insert == is_insert then
+    return
+  end
+  state.is_insert = is_insert
+
   if is_insert then
-    vim.cmd([[highlight Whitespace guifg=#2e3440 ctermfg=234]])
+    vim.api.nvim_set_hl(0, "Whitespace", { fg = "#2e3440" }) -- ghost
   else
-    -- Using 244 for better Normal mode visibility as per your feedback
-    vim.cmd([[highlight Whitespace guifg=#4c566a ctermfg=244]])
+    vim.api.nvim_set_hl(0, "Whitespace", { fg = "#4c566a" }) -- visible
   end
 end
 
--- 3. Dynamic Scaling Logic (Handles 2-4 spaces & EditorConfig)
+-- 4. Indent Guide Generator (cached)
+local static_chars = ",tab:»—,trail:×,nbsp:␣"
+
 local function update_indent_guides()
   local sw = vim.bo.shiftwidth
-  local space_count = (sw > 0) and sw or vim.bo.tabstop
-  if space_count <= 0 then
-    space_count = 4
+  local size = (sw > 0) and sw or vim.bo.tabstop
+  if size <= 0 then
+    size = 4
   end
 
-  local guide_char = "·"
-  local spaces = string.rep(" ", space_count - 1)
-  local dynamic_guide = guide_char .. spaces
+  -- Avoid recomputation if unchanged
+  if state.indent_size == size then
+    return
+  end
+  state.indent_size = size
 
-  -- Universal Package for Accuracy (catches tabs, trailing spaces, and NBSPs)
-  local str = table.concat({
-    "leadmultispace:" .. dynamic_guide,
-    "multispace:" .. dynamic_guide,
-    "tab:»—",
-    "trail:×",
-    "nbsp:␣",
-  }, ",")
+  local guide_char = "•"
+  local spaces = string.rep(" ", size - 1)
+  local dynamic = guide_char .. spaces
 
-  vim.opt_local.listchars = str
+  vim.opt_local.listchars = "leadmultispace:"
+    .. dynamic
+    .. ",multispace:"
+    .. dynamic
+    .. static_chars
 end
 
--- 4. Mode-Switching Observers (The Ghost Effect)
-vim.api.nvim_create_autocmd({ "InsertEnter" }, {
+-- 5. Autocommands (minimal set)
+
+-- Mode switching (no redundant calls)
+vim.api.nvim_create_autocmd("InsertEnter", {
   callback = function()
     set_guide_brightness(true)
   end,
 })
 
-vim.api.nvim_create_autocmd({ "InsertLeave" }, {
+vim.api.nvim_create_autocmd("InsertLeave", {
   callback = function()
     set_guide_brightness(false)
   end,
 })
 
--- 5. The Initialization Observer (Handles pre-existing files and LSPs)
-vim.api.nvim_create_autocmd(
-  { "BufEnter", "BufReadPost", "FileType", "LspAttach" },
-  {
-    callback = function()
-      update_indent_guides()
-      set_guide_brightness(false)
-      -- Force a redraw so guides appear immediately on file open
-      vim.cmd("redraw")
-    end,
-  }
-)
+-- File initialization (lean triggers only)
+vim.api.nvim_create_autocmd({ "BufReadPost", "FileType" }, {
+  callback = function()
+    update_indent_guides()
+    set_guide_brightness(false)
+  end,
+})

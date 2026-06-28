@@ -114,7 +114,7 @@ return {
       },
 
       codeLens = {
-        enable = true,
+        enable = false,
       },
 
       format = {

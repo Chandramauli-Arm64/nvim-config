@@ -15,7 +15,7 @@
 
 ![Quote](https://quotes-github-readme.vercel.app/api?type=horizontal&theme=radical)
 
-# nvim-config
+## nvim-config
 
 My neovim setup for android.
 

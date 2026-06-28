@@ -12,9 +12,9 @@ opt.clipboard = "unnamedplus" -- Use system clipboard (if available)
 opt.completeopt = { "menuone", "noselect" }
 
 -- Indentation
--- opt.expandtab = true -- Use spaces instead of tabs
--- opt.shiftwidth = 2 -- Size of an indent
--- opt.tabstop = 2 -- Number of spaces tabs count for
+opt.expandtab = true -- Use spaces instead of tabs
+opt.shiftwidth = 2 -- Size of an indent
+opt.tabstop = 2 -- Number of spaces tabs count for
 opt.smartindent = true -- Auto indent new lines
 
 -- UI
@@ -65,3 +65,9 @@ opt.winborder = "rounded"
 
 -- Autocomplete
 vim.o.autocomplete = true
+
+-- Only look 100 lines backward to calculate syntax coloring
+vim.cmd("syntax sync minlines=100")
+
+-- Stop trying to match text columns past character 300
+vim.opt.synmaxcol = 300

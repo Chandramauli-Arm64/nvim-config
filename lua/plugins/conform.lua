@@ -33,8 +33,7 @@ return {
       typescriptreact = { "prettier" },
       vue = { "prettier" },
       css = { "prettier" },
-      html = { "prettier" },
-      json = { "jq" },
+      json = { "prettier" },
       yaml = { "prettier" },
       ["*"] = { "codespell" }, -- apply everywhere
       ["_"] = { "trim_whitespace" }, -- fallback
@@ -48,12 +47,13 @@ return {
       v = { "vfmt" },
       vsh = { "vfmt" },
       vv = { "vfmt" },
+      html = { "prettier" },
     },
 
     -- Unified formatting options
     default_format_opts = {
       lsp_format = "fallback", -- use LSP if no formatter is set
-      timeout_ms = 3000, -- give prettier/others time to finish
+      timeout_ms = 5000, -- give prettier/others time to finish
       async = true, -- never block your typing
     },
 
@@ -63,7 +63,7 @@ return {
       if vim.api.nvim_buf_line_count(bufnr) > 5000 then
         return
       end
-      return { timeout_ms = 3000, lsp_format = "fallback" }
+      return { timeout_ms = 5000, lsp_format = "fallback" }
     end,
 
     -- Custom overrides (easy to extend)

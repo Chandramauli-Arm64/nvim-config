@@ -6,6 +6,9 @@ map("n", "<leader>h", ":nohlsearch<CR>", opts)
 map("n", "j", "gj", opts)
 map("n", "k", "gk", opts)
 -- map("n", "<leader>e", "<cmd>NvimTreeToggle<CR>", opts)
+map("n", "<leader>t", function()
+  require("transpose_words").transpose_words()
+end, { desc = "Transpose words" })
 
 wk.add({
   {
